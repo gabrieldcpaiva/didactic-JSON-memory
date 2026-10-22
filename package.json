@@ -1,7 +1,7 @@
 {
   "name": "didactic-json-memory",
-  "version": "1.0.0",
-  "description": "JSON prompt packages for Nano Banana Pro, with a scored memory that keeps only the rules that work.",
+  "version": "1.1.0",
+  "description": "JSON prompt packages for Nano Banana Pro, with a scored memory that keeps only the rules that work, and a zero-dependency web app.",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -11,13 +11,15 @@
     "nbjson": "tools/nbjson.mjs"
   },
   "scripts": {
+    "start": "node app/server.mjs",
+    "app": "node app/server.mjs",
+    "test": "node --test tests/smoke.test.mjs tests/server.test.mjs",
     "validate": "node tools/nbjson.mjs validate",
     "list": "node tools/nbjson.mjs list",
     "stats": "node tools/nbjson.mjs stats",
     "checklist": "node tools/nbjson.mjs checklist",
     "demo": "node tools/nbjson.mjs render product-hero-shot --vars examples/candle.vars.json",
-    "batch": "node tools/nbjson.mjs render youtube-thumbnail --vars examples/thumbnails.batch.json --out ./out",
-    "test": "node --test tests/smoke.test.mjs"
+    "batch": "node tools/nbjson.mjs render youtube-thumbnail --vars examples/thumbnails.batch.json --out ./out"
   },
   "keywords": [
     "nano-banana-pro",
@@ -33,6 +35,8 @@
     "templates",
     "memory",
     "schemas",
-    "docs"
+    "docs",
+    "app",
+    "agents"
   ]
 }

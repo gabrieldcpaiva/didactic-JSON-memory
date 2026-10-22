@@ -1,10 +1,12 @@
 # didactic-JSON-memory
 
-**A tiny, zero-dependency system for writing image prompts as JSON — with a memory that learns which rules actually work.**
+**A zero-dependency system for writing image prompts as JSON — with a memory that learns which rules actually work.**
 
 Built for Nano Banana Pro (`gemini-3-pro-image`). Written for people who are not programmers.
 
-No installs. No API keys. No accounts. Node.js and a text editor.
+Two ways in: a **web app** for people who never want to touch a terminal, and a **CLI** for people who do.
+
+No installs. No accounts. No build step. Node.js and a text editor.
 
 ---
 
@@ -18,33 +20,44 @@ This repo answers all three with one idea: **store the prompt as data, not as pr
 
 ---
 
-## Quickstart
+## Quickstart — the app
 
 ```bash
-# 1. Check that everything is healthy (no install needed)
-node tools/nbjson.mjs validate
-
-# 2. Render a finished prompt from a template
-node tools/nbjson.mjs render product-hero-shot --vars examples/candle.vars.json
-
-# 3. Paste the output into Nano Banana Pro. Attach your reference photo.
+node app/server.mjs        # → http://localhost:5173
 ```
 
-That is the whole loop. Everything else is optional.
+Pick a job. Fill nine blanks. Press **Render prompt**. Copy. Paste into Nano Banana Pro.
+
+The app shows the settings to use, the token count, the cost of one image, and the exact lessons that went into the prompt — each with a ✓ / ✕ so you can score it on the spot. What you score changes what the next prompt contains.
+
+Three views: **Build** (the form), **Memory** (what it has learned, and your human checklist), **How it works** (the loop, the limits, the CLI).
+
+## Quickstart — the CLI
+
+```bash
+node tools/nbjson.mjs validate
+node tools/nbjson.mjs render product-hero-shot --vars examples/candle.vars.json
+node tools/nbjson.mjs score L006 win
+npm test
+```
+
+Same engine, same files. Use whichever fits the moment.
 
 ---
 
 ## What is in the box
 
 ```
+app/         Zero-dependency web app: server.mjs + plain HTML/CSS/JS.
 templates/   7 ready packages. Fill the blanks, render, run.
 memory/      core.memory.json — 18 scored lessons, 15 active.
 lib/         validate.mjs, render.mjs, memory.mjs. Plain JS, no deps.
 tools/       nbjson.mjs — one CLI for validate / render / add / score.
 schemas/     JSON Schema files for editors and other tools.
 examples/    Real values files, including a 3-item batch.
-tests/       14 smoke tests. `npm test`. No test framework needed.
+tests/       24 checks: 14 engine, 10 server. `npm test`.
 docs/        GUIDE.md, PROMPTING.md, MEMORY.md, PLAYBOOK.md.
+agents/      Handoff coordinates: a task graph and four role briefs.
 ```
 
 | Template | Use it for |
@@ -58,6 +71,19 @@ docs/        GUIDE.md, PROMPTING.md, MEMORY.md, PLAYBOOK.md.
 | `brand-style-lock` | Build the reusable style plate the others borrow |
 
 ---
+
+## Handoff: passing this to another agent
+
+`agents/handoff.json` is a machine-readable task graph (T1–T6) with owners, steps, acceptance checks and explicit do-nots. Four briefs carry the judgment that does not fit in JSON:
+
+| Brief | Owns |
+|---|---|
+| `brief-BUILDER.md` | API adapter, per-client forks, gallery. With a list of temptations to refuse. |
+| `brief-DESIGNER.md` | The tokens, the composition rules, the accessibility floor. |
+| `brief-OPERATOR.md` | The 3-day delivery SOP, pricing postures, the QA gate. |
+| `brief-REVIEWER.md` | The five-minute gate, the "beggar" test, the claims audit. |
+
+Start with `agents/README.md`. It takes four minutes and tells you which brief is yours.
 
 ## The loop that makes it learn
 
@@ -127,11 +153,18 @@ Sources: [Google DeepMind model page](https://deepmind.google/models/gemini-imag
 
 ---
 
+## Design notes
+
+Warm paper, dark ink, one brass accent. Serif headlines, system UI body, mono for anything you will copy. No web fonts, no framework, no animation beyond two transitions — because the product is the prompt text, and everything else should get out of its way.
+
+The prompt box is the only dark surface on the page: it is the thing you came for.
+
 ## Honest limits
 
 - **A rendered prompt is not a guarantee.** The model still varies. Run two or three and pick.
 - **Small text still breaks.** Below ~12px in the final image, expect errors in any language.
-- **This does not call the API.** It prepares the prompt. You paste it into Gemini, AI Studio, or your own code.
+- **This does not call the API.** It prepares the prompt. You paste it into Gemini, AI Studio, or your own code. (T1 in the handoff adds an adapter.)
+- **The app has no auth.** It is a local tool. Do not put it on a public URL as-is.
 - **The seed scores are my starting priors, not lab results.** Score them yourself; the memory is designed to overwrite my opinion with your evidence.
 - **SynthID is embedded in every output.** Do not present generated images as untouched photographs.
 
