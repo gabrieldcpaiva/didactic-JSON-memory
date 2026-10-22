@@ -32,15 +32,18 @@ Three parts:
   "instruction": "Write one line per locked feature: face, label spelling, logo shape, proportions. Unlocked features drift first.",
   "scope": "prompt",
   "tags": ["edit", "product", "character", "photo"],
-  "score": 5,
-  "wins": 5,
+  "score": 0,
+  "wins": 0,
   "losses": 0,
-  "status": "active",
-  "evidence": "Explicit locks stopped label redesign in product tests."
+  "status": "trial",
+  "provenance": "prior",
+  "evidence": "Untested. No image has been judged against this yet."
 }
 ```
 
-Six fields do the work:
+That is the shipped state of **every** lesson in this repo. No wins, no status, no evidence. If you are looking for a file full of impressive scores, this is not it — and that is the point.
+
+Seven fields do the work:
 
 | Field | Job |
 |---|---|
@@ -49,6 +52,7 @@ Six fields do the work:
 | `tags` | Matched against the package's tags. |
 | `score` | `wins − losses`. The ordering key. |
 | `status` | `trial` → `active` → `retired`. |
+| `provenance` | `prior` = a belief shipped with the repo. `tested` = it earned a real win or loss. |
 | `evidence` | One line. If you cannot write it, the lesson is a guess. |
 
 ---
@@ -66,9 +70,11 @@ Six fields do the work:
                                  (back to trial)
 ```
 
-- **trial** — new, unproven. Still used, at lower priority.
-- **active** — earned its place. Used first.
+- **trial** — new, unproven. Still injected, at lower priority.
+- **active** — earned its place with two wins. Used first.
 - **retired** — kept as a warning. Never injected.
+
+Everything ships in `trial`. The first time you score a lesson, `provenance` flips to `tested` — that flip is the only thing in this repo that turns an opinion into a record.
 
 Retired lessons are not deleted. They are the record of what you already tried. `prune` only removes trial lessons that were never scored at all.
 
@@ -118,10 +124,12 @@ If you hit the cap, retire something. Do not raise it. Raising the cap is how pr
 ## Maintenance, once a week
 
 ```bash
-node tools/nbjson.mjs stats        # counts + token weight
+node tools/nbjson.mjs stats        # counts + token weight + evidence line
 node tools/nbjson.mjs list --status trial --chars
-node tools/nbjson.mjs prune        # dry run first
+node tools/nbjson.mjs prune        # dry run first; priors are protected
 ```
+
+`prune` only removes a trial lesson that has produced no result **and** is not a prior. Without that guard, the entirely-untested starting file would be deleted on the first run by a well-meaning agent.
 
 - [ ] Any trial lesson older than two weeks with zero scores? Delete it or test it.
 - [ ] Any active lesson you have not used in a month? Retire it.
@@ -137,7 +145,13 @@ node tools/nbjson.mjs prune        # dry run first
 npm test
 ```
 
-14 checks: templates valid, placeholders covered, defaults applied, determinism, the promote/retire lifecycle, workflow lessons kept out of prompts, budget respected, disk round-trip. If you change `lib/`, run this.
+27 checks, including three that keep this file honest:
+
+- shipped lessons must start at 0/0, `trial`, `prior` — a test, not a promise;
+- `prune` must not delete priors;
+- scoring a prior must flip it to `tested`.
+
+If you change `lib/`, run this. If you change `memory/core.memory.json`, the honesty test will catch you.
 
 ## Importing lessons from elsewhere
 

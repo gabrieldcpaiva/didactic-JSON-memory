@@ -13,6 +13,8 @@
     "The browser never invents data. It renders what the server returns.",
     "Raw JSON is never sent to the image model. The renderer writes sentences.",
     "A lesson is one sentence, one fix, under 240 characters.",
+    "No lesson claims a win it did not observe. Shipped lessons are provenance \"prior\" with 0/0.",
+    "prune must never delete an untested prior. It deletes failures, not beliefs.",
     "Memory stays under 24 active lessons and ~3,000 characters of active text.",
     "Prompt packs stay under ~30 lines of rendered output.",
     "File paths, field names, and CLI flags in the docs must match the code exactly."

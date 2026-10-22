@@ -91,6 +91,7 @@ Keep each image at 1K, under 400 KB. Show the lessons used — that is the story
 | A JSON Schema library | The hand-written validator's messages *are* the UX. |
 | Auto-retry on 429 | Spend happens silently. Never. |
 | Storing prompts in a DB | Files are the feature. They diff in Git. |
+| Seeding impressive scores | A prior with a win is a lie the UI repeats. Ship 0/0. |
 | Growing memory to 100 lessons | The prompt gets slower and the model ignores the tail. |
 
 ## Definition of done

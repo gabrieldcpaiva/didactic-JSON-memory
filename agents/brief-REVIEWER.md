@@ -29,6 +29,7 @@ A thing looks cheap when it apologises for existing. Check for these, in order:
 | Silent failure | A button that does nothing when a field is empty | Disable it, or explain in place |
 | Inconsistent naming | `aspect_ratio` in code, `aspect ratio` in docs, `ratio` in UI | Pick one per layer and stick to it |
 | Unjustified number | "94% accuracy" with no source | Source it or label it as an estimate |
+| Borrowed authority | A lesson with `wins: 5` and no evidence | Zero it, or write how you know |
 
 ## Claims audit
 

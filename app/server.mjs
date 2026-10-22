@@ -144,7 +144,11 @@ async function api(req, res, url) {
     const check = validateMemory(mem, 'memory');
     return json(res, 200, {
       templates: templateIndex(),
-      memory: { stats: memoryStats(mem), warnings: check.warnings },
+      memory: {
+        stats: memoryStats(mem),
+        warnings: check.warnings,
+        evidence: 'Every lesson ships unproven. Scoring is the only path to active.',
+      },
       prices: PRICE,
     });
   }

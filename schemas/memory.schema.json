@@ -48,6 +48,11 @@
           "wins": { "type": "number", "minimum": 0 },
           "losses": { "type": "number", "minimum": 0 },
           "status": { "enum": ["active", "trial", "retired"] },
+          "provenance": {
+            "enum": ["prior", "tested"],
+            "default": "prior",
+            "description": "prior = shipped belief, must carry 0 wins. tested = earned a win or loss against a real image."
+          },
           "source": { "type": "string", "examples": ["seed", "user", "import"] },
           "created_at": { "type": "string", "format": "date" },
           "evidence": { "type": "string", "description": "One line saying how you know it works." }
