@@ -1,0 +1,185 @@
+{
+  "prompt_package": {
+    "id": "product-hero-shot",
+    "version": "1.0.0",
+    "tags": [
+      "product",
+      "light",
+      "consistency"
+    ],
+    "goal_summary": "Turn one phone photo of a product into a clean, on-brand catalog hero shot in one run.",
+    "user_profile": {
+      "who": "Small shop owner with no design training",
+      "skill_level": "Beginner",
+      "language": "English",
+      "time_budget": "5 minutes",
+      "device": "Phone or laptop browser"
+    },
+    "nano_banana_prompt": {
+      "model": "gemini-3-pro-image",
+      "settings": {
+        "aspect_ratio": "4:5",
+        "resolution": "2K",
+        "reference_images": 1,
+        "search_grounding": false
+      },
+      "blocks": {
+        "task": "Create a clean e-commerce hero photo of {{product_name}} using the attached photo as the exact source for its shape, label and color.",
+        "subject": "{{product_name}}, unchanged in shape, label text and material. {{key_detail}}.",
+        "scene": "The product stands on {{surface}}. Behind it is a smooth {{brand_color}} backdrop that darkens slightly at the edges. Nothing else is in the frame.",
+        "style": [
+          "commercial product photography",
+          "soft studio light",
+          "true-to-life color",
+          "minimal clean set"
+        ],
+        "camera": "Eye level with a slight top-down tilt, 100mm macro look, product fills about 70% of the frame with even space on all four sides.",
+        "light": "Large softbox from the top left, white bounce card on the right, soft contact shadow under the product, thin rim highlight on the left edge.",
+        "text_in_image": [],
+        "locks": [
+          "Label text, spelling, logo shape and color stay exactly as in the reference photo.",
+          "Product proportions stay the same. No reshaping and no extra parts.",
+          "Material finish stays the same: {{material}}."
+        ],
+        "avoid": [
+          "blurry or clipped label text",
+          "extra props or hands in frame",
+          "warped, bent or melted edges",
+          "plastic-looking reflections",
+          "words, badges or watermarks I did not ask for"
+        ]
+      }
+    },
+    "input_schema": {
+      "description": "Fill these values before you run. Every {{name}} in the prompt comes from here.",
+      "fields": [
+        {
+          "name": "product_name",
+          "type": "string",
+          "required": true,
+          "example": "Amber Glass Candle 220g"
+        },
+        {
+          "name": "key_detail",
+          "type": "string",
+          "required": false,
+          "example": "A cotton wick, unlit, with a small paper seal on the lid",
+          "default": "A clean, unmarked top with no fingerprints"
+        },
+        {
+          "name": "surface",
+          "type": "string",
+          "required": true,
+          "example": "a pale travertine slab"
+        },
+        {
+          "name": "brand_color",
+          "type": "string",
+          "required": true,
+          "example": "warm sand beige"
+        },
+        {
+          "name": "material",
+          "type": "string",
+          "required": true,
+          "example": "frosted amber glass with a matte black lid"
+        },
+        {
+          "name": "reference_photo",
+          "type": "file",
+          "required": true,
+          "example": "IMG_2041.jpg, shot on a kitchen table"
+        }
+      ]
+    },
+    "output_schema": {
+      "description": "What you get back, plus how to accept or reject it.",
+      "fields": [
+        {
+          "name": "image",
+          "type": "file",
+          "example": "candle-hero-4x5-2k.png"
+        },
+        {
+          "name": "settings_used",
+          "type": "object",
+          "example": {
+            "aspect_ratio": "4:5",
+            "resolution": "2K"
+          }
+        },
+        {
+          "name": "accept_if",
+          "type": "array",
+          "example": [
+            "label is readable at phone size",
+            "shadow sits under the base",
+            "no clipped edges"
+          ]
+        },
+        {
+          "name": "reject_if",
+          "type": "array",
+          "example": [
+            "label letters are invented",
+            "product shape changed",
+            "background has a visible seam"
+          ]
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Candle on stone, sand background",
+        "example_input": {
+          "product_name": "Amber Glass Candle 220g",
+          "surface": "a pale travertine slab",
+          "brand_color": "warm sand beige",
+          "material": "frosted amber glass with a matte black lid",
+          "key_detail": "A cotton wick, unlit, with a small paper seal on the lid"
+        },
+        "example_output": {
+          "image": "candle-hero-4x5-2k.png",
+          "accept_if": [
+            "label reads exactly 'AMBER 220g'",
+            "glass has a soft window reflection",
+            "floor shadow is soft and short"
+          ]
+        }
+      },
+      {
+        "title": "Soap bar on linen, sage background",
+        "example_input": {
+          "product_name": "Oat Milk Soap Bar",
+          "surface": "folded raw linen",
+          "brand_color": "muted sage green",
+          "material": "matte cold-press soap with stamped lettering",
+          "key_detail": "One bar, slightly angled, paper band halfway up"
+        },
+        "example_output": {
+          "image": "soap-hero-4x5-2k.png",
+          "accept_if": [
+            "stamped letters are crisp",
+            "linen weave reads at 100%",
+            "band is not floating"
+          ]
+        }
+      }
+    ],
+    "non_obvious_insights": [
+      "The reference photo is the real product. Say 'exact source for shape, label and color' in the first line, or the model will redesign your packaging.",
+      "Ask for 70% frame fill. Products at 90% look cramped on mobile feeds, and products at 40% look like stock photos.",
+      "A soft contact shadow is the cheapest realism upgrade. Without it the product floats.",
+      "Never let the model redraw fine print. Crop the reference so the label is large when you upload it; small label input equals invented letters.",
+      "Generate at 1K for the first pass, then re-run the winner at 2K. 1K and 2K cost the same on this model, so 2K is the default for delivery.",
+      "4:5 beats 1:1 for marketplaces and Instagram grid. One canvas serves both."
+    ],
+    "monetization_ideas": [
+      "Offer a '10 products in one day' catalog pack to local shops. Same package, different variables.",
+      "Sell the filled JSON as a product-photo kit with a one-page checklist; the buyer fills the blanks themselves.",
+      "Bundle a monthly retainer: 20 refreshed hero shots per month for one store, priced under a studio day.",
+      "License the template to print-on-demand sellers who need consistent mockups across many SKUs."
+    ],
+    "reusability_notes": "Swap surface, backdrop and light for cosmetics, drinks, jewelry or ceramics. Change aspect_ratio to 1:1 for marketplaces, 16:9 for banners, 9:16 for stories. The same variables drive every channel, so one shoot becomes five placements. For a lifestyle version, add a hand and change scene only; keep locks untouched."
+  }
+}

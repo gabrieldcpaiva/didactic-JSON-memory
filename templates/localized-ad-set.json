@@ -1,0 +1,228 @@
+{
+  "prompt_package": {
+    "id": "localized-ad-set",
+    "version": "1.0.0",
+    "tags": [
+      "localization",
+      "ad",
+      "text",
+      "layout"
+    ],
+    "goal_summary": "Make one ad image per language with the same layout, so a campaign looks identical in every market.",
+    "user_profile": {
+      "who": "Marketer or freelancer running a small international campaign",
+      "skill_level": "Beginner",
+      "language": "English (output can be any language the model supports)",
+      "time_budget": "5 minutes per language"
+    },
+    "nano_banana_prompt": {
+      "model": "gemini-3-pro-image",
+      "settings": {
+        "aspect_ratio": "4:5",
+        "resolution": "2K",
+        "reference_images": 1,
+        "search_grounding": false
+      },
+      "blocks": {
+        "task": "Create a social ad for {{brand}} in {{language}}. Same layout as the attached master image. Only the headline and the small print change language.",
+        "subject": "{{product}} placed on the {{position}} of the frame. A {{brand_color}} shape sits behind it. The {{text_zone}} third is left empty for type.",
+        "scene": "Clean {{background_color}} backdrop, one soft shadow, no props. Layout identical to the reference: same margins, same logo position at {{logo_position}}, same text alignment.",
+        "style": [
+          "modern retail advertising",
+          "flat color blocks",
+          "clean geometric sans type",
+          "high legibility on phone"
+        ],
+        "camera": "Straight-on product view, no perspective. Layout matches the reference image pixel for pixel.",
+        "light": "Even soft studio light from above, gentle contact shadow, no visible light source.",
+        "text_in_image": [
+          {
+            "content": "{{headline}}",
+            "placement": "{{text_zone}} third, centered horizontally in that zone",
+            "style": "bold, {{headline_color}}, no outline",
+            "size": "two lines maximum, about 18% of frame height per line"
+          },
+          {
+            "content": "{{subline}}",
+            "placement": "directly under the headline",
+            "style": "medium weight, same color at 80% opacity",
+            "size": "about one third of the headline size"
+          },
+          {
+            "content": "{{legal_line}}",
+            "placement": "bottom edge inside the margin",
+            "style": "small caps, {{legal_color}}",
+            "size": "smallest text on the page"
+          }
+        ],
+        "locks": [
+          "Layout, margins, logo position and product placement match the master image exactly.",
+          "Write the text in {{language}}. Use the correct characters and accents for that language.",
+          "Copy each string exactly as given. Do not translate, shorten or add words."
+        ],
+        "avoid": [
+          "mixing two languages in one image",
+          "mirrored or flipped layouts",
+          "missing accents or wrong characters",
+          "invented legal text",
+          "decorative shapes that move the logo"
+        ]
+      }
+    },
+    "input_schema": {
+      "description": "One JSON file per language. Everything except language, headline, subline and legal line stays the same.",
+      "fields": [
+        {
+          "name": "brand",
+          "type": "string",
+          "required": true,
+          "example": "Nord & Co"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "required": true,
+          "example": "Brazilian Portuguese"
+        },
+        {
+          "name": "product",
+          "type": "string",
+          "required": true,
+          "example": "a matte black water bottle, 750ml"
+        },
+        {
+          "name": "headline",
+          "type": "string",
+          "required": true,
+          "example": "ÁGUA FRIA ATÉ O FIM DO DIA"
+        },
+        {
+          "name": "subline",
+          "type": "string",
+          "required": true,
+          "example": "24 horas de gelo. Sem gelo."
+        },
+        {
+          "name": "legal_line",
+          "type": "string",
+          "required": true,
+          "example": "Oferta válida até 31/12."
+        },
+        {
+          "name": "brand_color",
+          "type": "string",
+          "required": true,
+          "example": "burnt orange"
+        },
+        {
+          "name": "background_color",
+          "type": "string",
+          "required": true,
+          "example": "bone white"
+        },
+        {
+          "name": "headline_color",
+          "type": "string",
+          "required": true,
+          "example": "charcoal black"
+        },
+        {
+          "name": "legal_color",
+          "type": "string",
+          "required": true,
+          "example": "mid grey"
+        },
+        {
+          "name": "text_zone",
+          "type": "string",
+          "required": true,
+          "example": "left"
+        },
+        {
+          "name": "position",
+          "type": "string",
+          "required": true,
+          "example": "right"
+        },
+        {
+          "name": "logo_position",
+          "type": "string",
+          "required": true,
+          "example": "top left, inside the margin"
+        },
+        {
+          "name": "master_image",
+          "type": "file",
+          "required": true,
+          "example": "master-en-4x5.png"
+        }
+      ]
+    },
+    "output_schema": {
+      "description": "One image per language, plus a check that nothing moved.",
+      "fields": [
+        {
+          "name": "image",
+          "type": "file",
+          "example": "nord-bottle-ptbr-4x5-2k.png"
+        },
+        {
+          "name": "language_used",
+          "type": "string",
+          "example": "Brazilian Portuguese"
+        },
+        {
+          "name": "layout_hash_check",
+          "type": "string",
+          "example": "Stack the language versions in one file. Logo and product must sit at the same pixels."
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Bottle ad, Brazilian Portuguese",
+        "example_input": {
+          "language": "Brazilian Portuguese",
+          "headline": "ÁGUA FRIA ATÉ O FIM DO DIA",
+          "subline": "24 horas de gelo. Sem gelo.",
+          "legal_line": "Oferta válida até 31/12."
+        },
+        "example_output": {
+          "image": "nord-bottle-ptbr-4x5-2k.png",
+          "language_used": "Brazilian Portuguese",
+          "layout_hash_check": "Logo matches master at top left; accents on Á and á correct."
+        }
+      },
+      {
+        "title": "Same ad, Japanese",
+        "example_input": {
+          "language": "Japanese",
+          "headline": "一日中、冷たい水",
+          "subline": "氷は24時間。"
+        },
+        "example_output": {
+          "image": "nord-bottle-ja-4x5-2k.png",
+          "language_used": "Japanese",
+          "layout_hash_check": "Text zone unchanged; headline reflows to one line."
+        }
+      }
+    ],
+    "non_obvious_insights": [
+      "Make the first language the master image, then attach it as a reference for every other language. Text alignment stops drifting.",
+      "Line length is the real enemy. German and Portuguese run longer than English; write the shortest version first and translate up.",
+      "Never ask the model to translate. You supply native copy. The model's job is drawing, not localization.",
+      "Some scripts need more line height. Expect Japanese and Thai to need a shorter headline, not a smaller font.",
+      "Say 'do not translate, do not shorten'. Without that line the model quietly rewrites your copy.",
+      "Check accents at 100% zoom. Missing diacritics are the most common defect and the easiest to miss.",
+      "Two languages in one image almost always means mixed glyphs. One image per language, always."
+    ],
+    "monetization_ideas": [
+      "Sell 'one campaign, five markets' as a flat package to exporters.",
+      "Charge per language variant, not per hour: it scales with client value.",
+      "Offer a quarterly refresh: same layout, new offer, every market.",
+      "Partner with translation freelancers: they supply copy, you supply images, you split the job.",
+      "Sell the master image plus the JSON as a brand asset kit so in-house teams can self-serve."
+    ],
+    "reusability_notes": "Swap language, headline and legal line to add markets. Change aspect_ratio to 9:16 for stories or 1:1 for feeds; the layout locks hold. For a new product, keep the master and change only product and background color; for a new offer, change only the headline and legal line."
+  }
+}

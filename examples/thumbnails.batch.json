@@ -1,0 +1,35 @@
+[
+  {
+    "video_topic": "How I fixed my sleep in 7 days",
+    "headline": "SLEEP FIXED",
+    "person": "a man in his 30s wearing a dark green sweater",
+    "expression": "surprised, eyebrows raised, slight open mouth",
+    "hero_object": "a glowing alarm clock reading 7:00",
+    "background_style": "deep navy studio gradient",
+    "text_color": "warm cream",
+    "side": "right",
+    "text_side": "left"
+  },
+  {
+    "video_topic": "Five dinners for ten dollars",
+    "headline": "FIVE FOR $10",
+    "person": "a woman in her 20s wearing an apron",
+    "expression": "confident smirk, one eyebrow up",
+    "hero_object": "a full grocery bag with a receipt",
+    "background_style": "charcoal kitchen wall, softly out of focus",
+    "text_color": "mustard yellow",
+    "side": "left",
+    "text_side": "right"
+  },
+  {
+    "video_topic": "Why my first business failed",
+    "headline": "I LOST $8K",
+    "person": "the same man, tired but smiling",
+    "expression": "wry half-smile, eyes to camera",
+    "hero_object": "a crumpled invoice",
+    "background_style": "muted grey concrete wall",
+    "text_color": "signal red",
+    "side": "right",
+    "text_side": "left"
+  }
+]

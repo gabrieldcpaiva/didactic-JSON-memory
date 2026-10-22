@@ -1,0 +1,139 @@
+{
+  "prompt_package": {
+    "id": "photo-repair-and-light",
+    "version": "1.0.0",
+    "tags": [
+      "photo",
+      "edit",
+      "people",
+      "realism"
+    ],
+    "goal_summary": "Fix a real photo that is too dark, too dull or slightly damaged, without changing the people in it.",
+    "user_profile": {
+      "who": "Someone with a phone photo that matters: family, listing, or archive",
+      "skill_level": "Beginner",
+      "language": "English",
+      "time_budget": "3 minutes"
+    },
+    "nano_banana_prompt": {
+      "model": "gemini-3-pro-image",
+      "settings": {
+        "aspect_ratio": "auto",
+        "resolution": "2K",
+        "reference_images": 1,
+        "search_grounding": false
+      },
+      "blocks": {
+        "task": "Repair the attached photo. {{repair_goal}}. Keep every person, object and piece of text exactly as it is.",
+        "subject": "The same people with the same faces, same ages, same expressions, same clothing. Same objects in the same positions.",
+        "scene": "The original setting, framing and perspective, unchanged. Do not crop and do not extend the background.",
+        "style": [
+          "natural photography",
+          "true-to-life color",
+          "no filters",
+          "documentary realism"
+        ],
+        "camera": "Identical framing to the source. Sharp where the source is sharp. No lens distortion added.",
+        "light": "{{light_goal}}. Shadows stay soft. No blown highlights. Skin keeps its real texture with pores and fine lines visible.",
+        "text_in_image": [],
+        "locks": [
+          "Faces are identical to the source. Do not beautify, slim, smooth or age anyone.",
+          "Text, signs, labels and numbers in the photo stay identical.",
+          "The composition is identical. Nothing is added or removed except the damage I mention."
+        ],
+        "avoid": [
+          "waxy or airbrushed skin",
+          "new objects added to fill space",
+          "cropping into the subject",
+          "color casts turned into Instagram filters",
+          "sharpening halos around hair"
+        ]
+      }
+    },
+    "input_schema": {
+      "description": "Say the goal in plain words. One goal per run works best.",
+      "fields": [
+        {
+          "name": "repair_goal",
+          "type": "string",
+          "required": true,
+          "example": "Lift the shadows so faces are visible and remove the white scratch across the top left corner"
+        },
+        {
+          "name": "light_goal",
+          "type": "string",
+          "required": false,
+          "example": "Correct to warm late-afternoon light as if the sun were low on the left",
+          "default": "Correct to natural daylight with no color cast"
+        },
+        {
+          "name": "source_photo",
+          "type": "file",
+          "required": true,
+          "example": "family_1998_scan.jpg"
+        }
+      ]
+    },
+    "output_schema": {
+      "description": "Repaired image plus a side-by-side duty.",
+      "fields": [
+        {
+          "name": "image",
+          "type": "file",
+          "example": "family_1998_restored-2k.png"
+        },
+        {
+          "name": "compare_note",
+          "type": "string",
+          "example": "Open both at 100% and check eyes, hands and text before saving."
+        },
+        {
+          "name": "keep_original",
+          "type": "boolean",
+          "example": true
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Dark family scan, scratch on corner",
+        "example_input": {
+          "repair_goal": "Lift the shadows so faces are visible and remove the white scratch across the top left corner",
+          "light_goal": "Correct to warm late-afternoon light"
+        },
+        "example_output": {
+          "image": "family_1998_restored-2k.png",
+          "compare_note": "Eyes and hands match; scratch gone; grain preserved."
+        }
+      },
+      {
+        "title": "Dull real-estate interior",
+        "example_input": {
+          "repair_goal": "Brighten the room, straighten the vertical lines and remove the photographer's reflection in the window",
+          "light_goal": "Soft daylight from the windows, no artificial lamp glow"
+        },
+        "example_output": {
+          "image": "living-room-bright-2k.png",
+          "compare_note": "Furniture positions unchanged; window shows sky, not a person."
+        }
+      }
+    ],
+    "non_obvious_insights": [
+      "One repair per run. 'Fix the light and remove the scratch and change the background' fails, because each change pulls on the others.",
+      "Forbid beautification explicitly. The default edit direction smooths skin and thins faces; that reads as a different person.",
+      "Add 'keep the grain' when scanning old photos. Grain is what makes a repair look like a photo and not a render.",
+      "Hands, eyes and small text are the three places errors hide. Check all three at 100% before you pay for a 4K run.",
+      "Keep the original file untouched and save the repaired copy beside it. Never overwrite a family photo.",
+      "For listings, forbid changing furniture layout. Buyers compare photos to the walkthrough and notice.",
+      "Real-estate note: some platforms require disclosure of edited images. State the edit in the listing text."
+    ],
+    "monetization_ideas": [
+      "Offer photo restoration for families: per-photo price, tiered by damage.",
+      "Bundle listing-photo cleanup for realtors: 25 photos, one flat fee, 24-hour turnaround.",
+      "Sell a 'scan day' package to local historical societies, priced per 50 images.",
+      "Add a print-ready 4K upsell to any restoration order.",
+      "Teach a 30-minute class on preserving family photos; the JSON is the take-home checklist."
+    ],
+    "reusability_notes": "Same package fixes glare, red-eye-adjacent color casts, faded prints and flat phone photos. Swap repair_goal only. For batch work, keep settings fixed and loop over images; for products, use the product-hero package instead because this one forbids composition changes."
+  }
+}

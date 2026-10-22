@@ -1,0 +1,200 @@
+{
+  "prompt_package": {
+    "id": "brand-style-lock",
+    "version": "1.0.0",
+    "tags": [
+      "brand",
+      "consistency",
+      "layout",
+      "text"
+    ],
+    "goal_summary": "Build one reusable style reference image that makes every future image look like the same brand.",
+    "user_profile": {
+      "who": "Anybody who wants a consistent look across many images",
+      "skill_level": "Beginner",
+      "language": "English",
+      "time_budget": "6 minutes, once"
+    },
+    "nano_banana_prompt": {
+      "model": "gemini-3-pro-image",
+      "settings": {
+        "aspect_ratio": "16:9",
+        "resolution": "2K",
+        "reference_images": 0,
+        "search_grounding": false
+      },
+      "blocks": {
+        "task": "Create a brand style reference plate for {{brand}}. It is a design tool, not an ad. It shows the visual rules in one image.",
+        "subject": "A clean 3-panel layout on {{background_color}}. Left panel: the three brand colors as large flat swatches with small hex-style labels. Middle panel: three sample shapes or products in the brand look. Right panel: a short type specimen using the words {{type_sample}}.",
+        "scene": "Wide flat plate, thin hairline dividers between panels, generous margins, no photography, no people, no logos other than {{brand}} wordmark at the top left.",
+        "style": [
+          "{{style_adjectives}}",
+          "flat design reference sheet",
+          "precise grid",
+          "consistent color grading"
+        ],
+        "camera": "Straight-on flat view, no perspective, no shadows, no paper texture, no mockup frame.",
+        "light": "Even, flat illumination. Colors must be exact and unmodified.",
+        "text_in_image": [
+          {
+            "content": "{{brand}}",
+            "placement": "top left corner",
+            "style": "wordmark in {{primary_color}}",
+            "size": "small, understated"
+          },
+          {
+            "content": "{{type_sample}}",
+            "placement": "right panel, large",
+            "style": "{{type_feel}}",
+            "size": "dominant on that panel"
+          }
+        ],
+        "locks": [
+          "The three swatches are {{primary_color}}, {{secondary_color}} and {{accent_color}}. They must be flat and clean.",
+          "Layout stays a three-panel grid with hairline dividers.",
+          "No extra text beyond the brand name and the type sample."
+        ],
+        "avoid": [
+          "gradients or textures on the swatches",
+          "photographs of objects",
+          "more than four colors",
+          "decorative illustration",
+          "drop shadows or bevels"
+        ]
+      }
+    },
+    "input_schema": {
+      "description": "Fill this once per brand. Save the result; you will reuse it forever.",
+      "fields": [
+        {
+          "name": "brand",
+          "type": "string",
+          "required": true,
+          "example": "Nord & Co"
+        },
+        {
+          "name": "primary_color",
+          "type": "string",
+          "required": true,
+          "example": "deep forest green"
+        },
+        {
+          "name": "secondary_color",
+          "type": "string",
+          "required": true,
+          "example": "bone white"
+        },
+        {
+          "name": "accent_color",
+          "type": "string",
+          "required": true,
+          "example": "burnt orange"
+        },
+        {
+          "name": "background_color",
+          "type": "string",
+          "required": true,
+          "example": "light warm grey"
+        },
+        {
+          "name": "style_adjectives",
+          "type": "string",
+          "required": true,
+          "example": "calm, premium, outdoors, uncluttered"
+        },
+        {
+          "name": "type_feel",
+          "type": "string",
+          "required": true,
+          "example": "clean geometric sans, tight spacing"
+        },
+        {
+          "name": "type_sample",
+          "type": "string",
+          "required": true,
+          "example": "Cold water, all day"
+        }
+      ]
+    },
+    "output_schema": {
+      "description": "The plate, plus how to use it.",
+      "fields": [
+        {
+          "name": "image",
+          "type": "file",
+          "example": "nord-style-plate-16x9-2k.png"
+        },
+        {
+          "name": "use_as",
+          "type": "string",
+          "example": "Attach as reference image 3 in every other package."
+        },
+        {
+          "name": "color_pick_list",
+          "type": "array",
+          "example": [
+            "#1F3B2C",
+            "#F6F3EC",
+            "#C25A2B"
+          ]
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Outdoor drink brand plate",
+        "example_input": {
+          "brand": "Nord & Co",
+          "primary_color": "deep forest green",
+          "secondary_color": "bone white",
+          "accent_color": "burnt orange",
+          "style_adjectives": "calm, premium, outdoors, uncluttered"
+        },
+        "example_output": {
+          "image": "nord-style-plate-16x9-2k.png",
+          "use_as": "Reference image 3 for product, ad and social packages.",
+          "color_pick_list": [
+            "#1F3B2C",
+            "#F6F3EC",
+            "#C25A2B"
+          ]
+        }
+      },
+      {
+        "title": "Playful children's brand plate",
+        "example_input": {
+          "brand": "Pip & Pod",
+          "primary_color": "teal",
+          "secondary_color": "butter yellow",
+          "accent_color": "coral pink",
+          "style_adjectives": "friendly, rounded, playful, handmade"
+        },
+        "example_output": {
+          "image": "pippod-style-plate-16x9-2k.png",
+          "use_as": "Reference image 3 for book and social packages.",
+          "color_pick_list": [
+            "#0F7C7B",
+            "#F7D774",
+            "#F26D6D"
+          ]
+        }
+      }
+    ],
+    "non_obvious_insights": [
+      "This is the highest-leverage package here. One plate reused as a reference in every other prompt buys consistency across a whole catalog.",
+      "Color names are ambiguous. Add hex codes into the image as tiny labels, then sample the real pixels afterward with any color picker.",
+      "Never attach more than one style plate at a time. Two plates average into a third style you did not choose.",
+      "A three-panel layout forces the model to hold color, form and type at once, which is exactly what a brand is.",
+      "Regenerate the plate when the brand changes, not the individual images. One update cascades.",
+      "Say 'design tool, not an ad' in the task line. Otherwise the model adds marketing copy you did not ask for."
+    ],
+    "monetization_ideas": [
+      "Sell a brand starter kit: style plate, color list, type rules, and five image packages.",
+      "Offer a 'consistency audit' to brands whose images drift across channels.",
+      "Give the plate free and charge for the image sets that use it. It makes the value visible.",
+      "License the plate-plus-JSON bundle to agencies as an internal standard.",
+      "Use the plate as the cover of a paid template pack; it is the proof of quality."
+    ],
+    "reusability_notes": "Build one plate per brand, product line or campaign. Attach it as the last reference image in product, social and ad packages. To extend: add a fourth panel with sample layouts at 16:9, 4:5 and 9:16 so every channel inherits the same proportions. Keep the plate in the same folder as the memory file so a session always starts with both."
+  }
+}

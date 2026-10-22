@@ -1,0 +1,242 @@
+{
+  "prompt_package": {
+    "id": "notes-to-infographic",
+    "version": "1.0.0",
+    "tags": [
+      "infographic",
+      "text",
+      "layout",
+      "quality"
+    ],
+    "goal_summary": "Turn rough notes into a clean one-page infographic with exact numbers and no invented facts.",
+    "user_profile": {
+      "who": "Consultant or teacher who writes in bullet points",
+      "skill_level": "Beginner",
+      "language": "English",
+      "time_budget": "6 minutes"
+    },
+    "nano_banana_prompt": {
+      "model": "gemini-3-pro-image",
+      "settings": {
+        "aspect_ratio": "4:5",
+        "resolution": "2K",
+        "reference_images": 0,
+        "search_grounding": false
+      },
+      "blocks": {
+        "task": "Design a one-page infographic titled {{title}} that explains {{topic}} to a beginner using only the facts I give you.",
+        "subject": "A vertical stack of {{section_count}} numbered sections. Each section has a short heading, one sentence, and one simple icon. Section {{highlight_index}} is the visual focus and gets a filled accent panel.",
+        "scene": "Flat {{background_color}} page with a slim {{brand_color}} header band at the top and a one-line footer reading {{footer}}. Generous white space between sections. No photographic elements.",
+        "style": [
+          "editorial infographic",
+          "flat vector icons",
+          "two-color palette plus one accent",
+          "swiss grid layout",
+          "clean geometric sans type"
+        ],
+        "camera": "Straight-on flat view. The page fills the frame edge to edge with an even 6% margin. No perspective, no shadows, no mockup device.",
+        "light": "Flat even color. No gradients except one soft tint inside the accent panel.",
+        "text_in_image": [
+          {
+            "content": "{{title}}",
+            "placement": "top left, inside the header band",
+            "style": "bold, {{text_color}} on {{brand_color}}",
+            "size": "largest text on the page"
+          },
+          {
+            "content": "{{fact_1}}",
+            "placement": "section 1, under its heading",
+            "style": "regular body weight, dark grey",
+            "size": "clearly readable, one line"
+          },
+          {
+            "content": "{{fact_2}}",
+            "placement": "section 2, under its heading",
+            "style": "regular body weight, dark grey",
+            "size": "clearly readable, one line"
+          },
+          {
+            "content": "{{fact_3}}",
+            "placement": "section 3, under its heading",
+            "style": "regular body weight, dark grey",
+            "size": "clearly readable, one line"
+          },
+          {
+            "content": "{{footer}}",
+            "placement": "bottom edge, small",
+            "style": "uppercase, letter-spaced, light grey",
+            "size": "smallest text on the page"
+          }
+        ],
+        "locks": [
+          "Copy every number, date and name exactly as given. Never round, never estimate, never add a statistic.",
+          "The layout order is fixed: title, then sections top to bottom, then footer.",
+          "Icons stay simple line shapes. No faces, no flags, no logos."
+        ],
+        "avoid": [
+          "invented statistics or sources",
+          "text smaller than the body size",
+          "overlapping elements",
+          "photorealistic people or products",
+          "decorative clip art",
+          "words in a language other than the one I wrote"
+        ]
+      }
+    },
+    "input_schema": {
+      "description": "Your notes go in as short, plain sentences. Numbers must be written exactly as they should appear.",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "example": "THE 3 COSTS OF SLOW EMAIL"
+        },
+        {
+          "name": "topic",
+          "type": "string",
+          "required": true,
+          "example": "why reply time decides whether a lead buys"
+        },
+        {
+          "name": "section_count",
+          "type": "integer",
+          "required": true,
+          "example": 3
+        },
+        {
+          "name": "highlight_index",
+          "type": "integer",
+          "required": false,
+          "example": 2,
+          "default": 1
+        },
+        {
+          "name": "fact_1",
+          "type": "string",
+          "required": true,
+          "example": "78% of buyers pick the first reply"
+        },
+        {
+          "name": "fact_2",
+          "type": "string",
+          "required": true,
+          "example": "A 24h delay cuts close rate by half"
+        },
+        {
+          "name": "fact_3",
+          "type": "string",
+          "required": true,
+          "example": "One saved deal pays for a year of tooling"
+        },
+        {
+          "name": "footer",
+          "type": "string",
+          "required": true,
+          "example": "SOURCE: INTERNAL CRM, 2025"
+        },
+        {
+          "name": "brand_color",
+          "type": "string",
+          "required": true,
+          "example": "deep teal"
+        },
+        {
+          "name": "background_color",
+          "type": "string",
+          "required": true,
+          "example": "off-white"
+        },
+        {
+          "name": "text_color",
+          "type": "string",
+          "required": true,
+          "example": "cream white"
+        }
+      ]
+    },
+    "output_schema": {
+      "description": "Rendered page plus a verification pass.",
+      "fields": [
+        {
+          "name": "image",
+          "type": "file",
+          "example": "email-costs-4x5-2k.png"
+        },
+        {
+          "name": "text_audit",
+          "type": "array",
+          "example": [
+            "title matches",
+            "3 facts match",
+            "footer matches",
+            "no extra numbers"
+          ]
+        },
+        {
+          "name": "readability_check",
+          "type": "string",
+          "example": "Body text legible at 50% zoom on a laptop."
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Three costs of slow email",
+        "example_input": {
+          "title": "THE 3 COSTS OF SLOW EMAIL",
+          "section_count": 3,
+          "fact_1": "78% of buyers pick the first reply",
+          "fact_2": "A 24h delay cuts close rate by half",
+          "fact_3": "One saved deal pays for a year of tooling",
+          "footer": "SOURCE: INTERNAL CRM, 2025"
+        },
+        "example_output": {
+          "image": "email-costs-4x5-2k.png",
+          "text_audit": [
+            "title exact",
+            "78% appears once",
+            "footer present",
+            "no invented stats"
+          ]
+        }
+      },
+      {
+        "title": "Onboarding in four steps",
+        "example_input": {
+          "title": "ONBOARD IN 4 STEPS",
+          "section_count": 4,
+          "fact_1": "Day 1: one login link",
+          "fact_2": "Day 2: import one file",
+          "fact_3": "Day 3: invite one teammate",
+          "fact_4": "Day 4: publish one page"
+        },
+        "example_output": {
+          "image": "onboarding-4x5-2k.png",
+          "text_audit": [
+            "four steps present",
+            "day numbers correct",
+            "no extra copy"
+          ]
+        }
+      }
+    ],
+    "non_obvious_insights": [
+      "This model renders long text well, but each extra word competes for space. Write the on-image copy first, in the JSON, then design around it.",
+      "Put the exact strings in the JSON and nowhere else. Notes pasted into the task line get paraphrased; lines listed under text_in_image get copied.",
+      "Say 'no perspective, no shadows, no mockup device'. Otherwise you get a pretty photo of a poster instead of a flat page you can post.",
+      "A 4:5 page survives both a LinkedIn feed and a carousel swipe. Export one file, use it twice.",
+      "Section labels are the model's job; section numbers are yours. Number the sections yourself in the text strings if the order matters.",
+      "Ask for a footer source line. It costs one line and adds instant credibility.",
+      "Run a letter-by-letter audit on numbers only. Numbers are where errors become expensive."
+    ],
+    "monetization_ideas": [
+      "Sell 'notes to one-pager' as a fixed-price service for coaches and consultants.",
+      "Package 12 infographics per quarter for a B2B client, priced per quarter, not per image.",
+      "Turn a client's internal report into a shareable page and charge for the design pass.",
+      "Sell the empty template plus a 30-line style guide to agencies that need on-brand consistency.",
+      "Upsell a slide version: same blocks, aspect_ratio 16:9, one run per slide."
+    ],
+    "reusability_notes": "One package covers process diagrams, comparison tables, timelines and stat cards: change section_count, facts and the icon wording only. For 21:9 web banners, cut to two facts. For a 9:16 story, stack four short facts. Keep the locks unchanged; they are what makes the output trustworthy."
+  }
+}

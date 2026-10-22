@@ -1,0 +1,165 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.local/schemas/prompt-package.schema.json",
+  "title": "Nano Banana Pro prompt package",
+  "description": "One self-contained, reusable instruction file. Fill the blanks, render the prompt, run it.",
+  "type": "object",
+  "required": ["prompt_package"],
+  "additionalProperties": true,
+  "properties": {
+    "prompt_package": { "$ref": "#/definitions/package" }
+  },
+  "definitions": {
+    "package": {
+      "type": "object",
+      "required": [
+        "goal_summary",
+        "user_profile",
+        "nano_banana_prompt",
+        "input_schema",
+        "output_schema",
+        "examples",
+        "non_obvious_insights",
+        "monetization_ideas",
+        "reusability_notes"
+      ],
+      "properties": {
+        "id": { "type": "string", "description": "Short kebab-case name. Used in file names." },
+        "version": { "type": "string", "description": "Bump when you change a lock or a setting." },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "2-4 words that choose which memory lessons get injected."
+        },
+        "goal_summary": {
+          "type": "string",
+          "maxLength": 400,
+          "description": "One sentence a beginner understands."
+        },
+        "user_profile": {
+          "type": "object",
+          "required": ["who", "skill_level", "language"],
+          "properties": {
+            "who": { "type": "string" },
+            "skill_level": { "enum": ["Beginner", "Intermediate", "Advanced"] },
+            "language": { "type": "string" },
+            "time_budget": { "type": "string" },
+            "device": { "type": "string" }
+          }
+        },
+        "nano_banana_prompt": {
+          "type": "object",
+          "required": ["model", "settings", "blocks"],
+          "properties": {
+            "model": { "type": "string", "examples": ["gemini-3-pro-image"] },
+            "settings": {
+              "type": "object",
+              "required": ["aspect_ratio", "resolution"],
+              "properties": {
+                "aspect_ratio": {
+                  "enum": ["auto", "1:1", "3:2", "2:3", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9", "1:4", "4:1", "1:8", "8:1"]
+                },
+                "resolution": { "enum": ["1K", "2K", "4K"] },
+                "reference_images": { "type": "integer", "minimum": 0, "maximum": 14 },
+                "search_grounding": { "type": "boolean" }
+              }
+            },
+            "blocks": {
+              "type": "object",
+              "required": ["task"],
+              "properties": {
+                "task": { "type": "string", "maxLength": 400, "description": "The one job. Start with a verb." },
+                "subject": { "type": "string", "description": "Who or what is in the frame." },
+                "scene": { "type": "string", "description": "Where it sits and what is left empty." },
+                "style": { "type": "array", "items": { "type": "string" }, "description": "2-4 words. No paragraphs." },
+                "camera": { "type": "string", "description": "Framing, angle, lens feel, frame fill." },
+                "lens": { "type": "string" },
+                "framing": { "type": "string" },
+                "light": { "type": "string", "description": "Direction, softness, shadow behavior." },
+                "text_in_image": {
+                  "type": "array",
+                  "maxItems": 6,
+                  "description": "Exact strings only. Keep each under 80 characters.",
+                  "items": {
+                    "type": "object",
+                    "required": ["content"],
+                    "properties": {
+                      "content": { "type": "string", "maxLength": 80 },
+                      "placement": { "type": "string" },
+                      "style": { "type": "string" },
+                      "size": { "type": "string" }
+                    }
+                  }
+                },
+                "locks": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Facts that must not change. One per line."
+                },
+                "avoid": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Short failure list. Prefer a positive rewrite where possible."
+                },
+                "extra": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Anything that fits nowhere else. Use rarely."
+                }
+              }
+            }
+          }
+        },
+        "input_schema": { "$ref": "#/definitions/fieldset" },
+        "output_schema": { "$ref": "#/definitions/fieldset" },
+        "examples": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["title", "example_input", "example_output"],
+            "properties": {
+              "title": { "type": "string" },
+              "example_input": { "type": ["object", "array", "string"] },
+              "example_output": { "type": ["object", "array", "string"] }
+            }
+          }
+        },
+        "non_obvious_insights": {
+          "type": "array",
+          "minItems": 3,
+          "items": { "type": "string" }
+        },
+        "monetization_ideas": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "type": "string" }
+        },
+        "reusability_notes": { "type": "string", "maxLength": 1200 }
+      }
+    },
+    "fieldset": {
+      "type": "object",
+      "required": ["description", "fields"],
+      "properties": {
+        "description": { "type": "string" },
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name", "type", "example"],
+            "properties": {
+              "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+              "type": { "enum": ["string", "integer", "number", "boolean", "file", "array", "object", "enum"] },
+              "required": { "type": "boolean" },
+              "example": {},
+              "description": { "type": "string" },
+              "values": { "type": "array", "items": { "type": "string" }, "description": "Allowed values when type is enum." }
+            }
+          }
+        }
+      }
+    }
+  }
+}
