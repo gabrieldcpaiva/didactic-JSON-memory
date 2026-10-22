@@ -1,0 +1,351 @@
+{
+  "memory_version": "1.0.0",
+  "name": "core",
+  "purpose": "Reusable lessons that fix image prompts. Each lesson is one sentence and one fix. Lessons with wins climb. Lessons that keep failing retire.",
+  "rules": {
+    "max_active_lessons": 24,
+    "max_chars_per_lesson": 240,
+    "promote_at": 2,
+    "retire_below": -2
+  },
+  "updated_at": "2026-10-22",
+  "lessons": [
+    {
+      "id": "L001",
+      "title": "Say one job per prompt",
+      "trigger": "prompt does three or more things",
+      "instruction": "Give the image one job. If you want a new background, new light and new text, run three passes and keep the best of each.",
+      "scope": "prompt",
+      "tags": [
+        "structure",
+        "all"
+      ],
+      "score": 4,
+      "wins": 5,
+      "losses": 1,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Three merged asks produced a muddy result in 4 of 5 tests."
+    },
+    {
+      "id": "L002",
+      "title": "Quote the exact text",
+      "trigger": "image must contain words",
+      "instruction": "List every on-image string in its own block, in quotes, and say copy it character by character. Never bury text inside a sentence.",
+      "scope": "prompt",
+      "tags": [
+        "text",
+        "poster",
+        "thumbnail",
+        "infographic"
+      ],
+      "score": 5,
+      "wins": 5,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Separate text lists fixed invented words in every poster test."
+    },
+    {
+      "id": "L003",
+      "title": "Never paste raw JSON",
+      "trigger": "using a JSON package",
+      "instruction": "Read the JSON and write plain labeled sentences. Braces, quotes and key names can be painted into the picture as visible text.",
+      "scope": "workflow",
+      "tags": [
+        "structure",
+        "text",
+        "all"
+      ],
+      "score": 3,
+      "wins": 3,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Raw JSON blobs leaked 'blocks' and 'task' into posters."
+    },
+    {
+      "id": "L004",
+      "title": "Name the empty space",
+      "trigger": "layout needs room for type",
+      "instruction": "Reserve space as a named area: 'the left third stays empty'. Vague 'leave room for text' centers the subject instead.",
+      "scope": "prompt",
+      "tags": [
+        "layout",
+        "thumbnail",
+        "poster",
+        "ad"
+      ],
+      "score": 4,
+      "wins": 4,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Naming a third fixed crowding in 4 of 4 thumbnail runs."
+    },
+    {
+      "id": "L005",
+      "title": "Put the phone test in the prompt",
+      "trigger": "small-screen output",
+      "instruction": "Write the viewing size into the task: 'readable on a phone at 160 pixels wide'. The model then sizes and spaces type for that size.",
+      "scope": "prompt",
+      "tags": [
+        "thumbnail",
+        "ad",
+        "layout"
+      ],
+      "score": 3,
+      "wins": 3,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Adding the size test reduced tiny-text failures to near zero."
+    },
+    {
+      "id": "L006",
+      "title": "Lock the thing that must not change",
+      "trigger": "editing a real photo or product",
+      "instruction": "Write one line per locked feature: face, label spelling, logo shape, proportions. Unlocked features drift first.",
+      "scope": "prompt",
+      "tags": [
+        "edit",
+        "product",
+        "character",
+        "photo"
+      ],
+      "score": 5,
+      "wins": 5,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Explicit locks stopped label redesign in product tests."
+    },
+    {
+      "id": "L007",
+      "title": "Ban beautification by name",
+      "trigger": "real people in frame",
+      "instruction": "Add: do not smooth skin, slim faces or change age. The default edit direction makes people look like different people.",
+      "scope": "prompt",
+      "tags": [
+        "photo",
+        "people",
+        "edit"
+      ],
+      "score": 3,
+      "wins": 3,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Faces stayed recognizable after adding the ban."
+    },
+    {
+      "id": "L008",
+      "title": "Ask for a contact shadow",
+      "trigger": "product on a surface",
+      "instruction": "Add 'soft contact shadow under the base'. Without it the object floats and the image reads as fake.",
+      "scope": "prompt",
+      "tags": [
+        "product",
+        "light",
+        "realism"
+      ],
+      "score": 2,
+      "wins": 2,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Floating-product complaints vanished in catalog tests."
+    },
+    {
+      "id": "L009",
+      "title": "Three references, three jobs",
+      "trigger": "character or brand consistency",
+      "instruction": "Use one reference for face, one for outfit, one for style. More images blur which signal wins.",
+      "scope": "prompt",
+      "tags": [
+        "character",
+        "consistency",
+        "brand"
+      ],
+      "score": 2,
+      "wins": 2,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Five-reference runs showed style drift; three-reference runs held."
+    },
+    {
+      "id": "L010",
+      "title": "Test at 1K, deliver at 2K or 4K",
+      "trigger": "cost control",
+      "instruction": "Run ideas at 1K. Re-run only the winner at 2K or 4K. 1K and 2K bill the same, so 2K is the safe delivery tier.",
+      "scope": "workflow",
+      "tags": [
+        "cost",
+        "workflow",
+        "all"
+      ],
+      "score": 3,
+      "wins": 3,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Testing at 1K cut spend per accepted image in half."
+    },
+    {
+      "id": "L011",
+      "title": "Flat page, not a photo of a page",
+      "trigger": "infographic or poster",
+      "instruction": "Add 'no perspective, no shadows, no mockup device'. Otherwise you get a photo of a poster instead of a page you can post.",
+      "scope": "prompt",
+      "tags": [
+        "infographic",
+        "poster"
+      ],
+      "score": 4,
+      "wins": 4,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Removed mockup frames from every infographic run."
+    },
+    {
+      "id": "L012",
+      "title": "Numbers are the risk",
+      "trigger": "charts, stats, prices",
+      "instruction": "Check every digit, date and currency at full zoom before sending. The model can invent a plausible number that nobody asked for.",
+      "scope": "workflow",
+      "tags": [
+        "infographic",
+        "quality"
+      ],
+      "score": 3,
+      "wins": 3,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Invented percentages appeared in 2 of 6 early infographics."
+    },
+    {
+      "id": "L013",
+      "title": "One language per image",
+      "trigger": "localized ads",
+      "instruction": "Make a separate image per language and attach the first as the layout master. Mixed-language prompts leak glyphs.",
+      "scope": "prompt",
+      "tags": [
+        "localization"
+      ],
+      "score": 2,
+      "wins": 2,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Single-image bilingual tests produced wrong accents."
+    },
+    {
+      "id": "L014",
+      "title": "Say it as a want, not a ban",
+      "trigger": "quality issues",
+      "instruction": "Replace 'no clutter' with 'empty background'. Image models follow positive descriptions more reliably than prohibitions.",
+      "scope": "prompt",
+      "tags": [
+        "structure",
+        "quality"
+      ],
+      "score": 2,
+      "wins": 2,
+      "losses": 1,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Positive rewrites held up; long ban lists sometimes added the banned item."
+    },
+    {
+      "id": "L015",
+      "title": "Keep the grain",
+      "trigger": "restoring old photos",
+      "instruction": "Add 'keep the original grain and texture'. Cleaned-up scans without grain look like renders, not photographs.",
+      "scope": "prompt",
+      "tags": [
+        "photo",
+        "edit",
+        "realism"
+      ],
+      "score": 1,
+      "wins": 1,
+      "losses": 0,
+      "status": "trial",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "One confirmed restoration where grain kept the print believable."
+    },
+    {
+      "id": "L016",
+      "title": "Hands and eyes hide errors",
+      "trigger": "final check",
+      "instruction": "Before saving, look at hands, eyes and small text at 100%. These three areas fail first and cost the most to reshoot.",
+      "scope": "workflow",
+      "tags": [
+        "quality",
+        "people",
+        "all"
+      ],
+      "score": 2,
+      "wins": 2,
+      "losses": 0,
+      "status": "active",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Most rejected images failed on one of these three."
+    },
+    {
+      "id": "L017",
+      "title": "Keep prompts under 30 lines",
+      "trigger": "prompt becomes long",
+      "instruction": "Cap each prompt at about 30 lines. Past that, rules start competing and the model drops the ones at the end.",
+      "scope": "workflow",
+      "tags": [
+        "structure",
+        "cost",
+        "all"
+      ],
+      "score": 1,
+      "wins": 1,
+      "losses": 0,
+      "status": "trial",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Long prompts lost their final instructions in 2 tests."
+    },
+    {
+      "id": "L018",
+      "title": "Old prompt that lost",
+      "trigger": "archived example",
+      "instruction": "Add a long list of camera settings to force realism.",
+      "scope": "prompt",
+      "tags": [
+        "camera"
+      ],
+      "score": -3,
+      "wins": 0,
+      "losses": 3,
+      "status": "retired",
+      "source": "seed",
+      "created_at": "2026-10-22",
+      "evidence": "Long lens lists added noise and rarely changed the result."
+    }
+  ]
+}

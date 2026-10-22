@@ -1,0 +1,195 @@
+{
+  "prompt_package": {
+    "id": "youtube-thumbnail",
+    "version": "1.0.0",
+    "tags": [
+      "thumbnail",
+      "layout",
+      "text",
+      "people"
+    ],
+    "goal_summary": "Make a readable YouTube thumbnail with one clear face, one object and at most three words.",
+    "user_profile": {
+      "who": "Creator who uploads weekly and has no editor",
+      "skill_level": "Beginner",
+      "language": "English",
+      "time_budget": "4 minutes"
+    },
+    "nano_banana_prompt": {
+      "model": "gemini-3-pro-image",
+      "settings": {
+        "aspect_ratio": "16:9",
+        "resolution": "2K",
+        "reference_images": 1,
+        "search_grounding": false
+      },
+      "blocks": {
+        "task": "Design a YouTube thumbnail for a video called {{video_topic}}. It must be readable on a phone at 160 pixels wide.",
+        "subject": "{{person}} on the {{side}} of the frame, chest up, {{expression}}, eyes to camera. Beside them: {{hero_object}}.",
+        "scene": "A simple {{background_style}} background, slightly darker than the subject so the silhouette pops. Strong empty space in the {{text_side}} third for the headline.",
+        "style": [
+          "bold editorial thumbnail",
+          "high contrast",
+          "saturated but natural skin tones",
+          "clean cut-out shapes"
+        ],
+        "camera": "85mm portrait look, shallow but readable depth, subject sharp from hairline to shoulder.",
+        "light": "Bright key light from the front left, soft fill, clear catchlights in the eyes, subtle rim light to separate hair from background.",
+        "text_in_image": [
+          {
+            "content": "{{headline}}",
+            "placement": "{{text_side}} third, upper area, aligned to the outside edge",
+            "style": "very bold condensed sans, heavy weight, {{text_color}}",
+            "size": "about one third of the frame height, two lines maximum"
+          }
+        ],
+        "locks": [
+          "The person's face, hair and skin tone match the attached photo exactly.",
+          "The headline is spelled exactly as written, all capitals, no extra words.",
+          "At most one graphic element besides the person and the object."
+        ],
+        "avoid": [
+          "tiny text or more than three words",
+          "cluttered corners",
+          "faces that look airbrushed or plastic",
+          "letters cut off by the frame edge",
+          "arrow, circle or emoji stickers"
+        ]
+      }
+    },
+    "input_schema": {
+      "description": "Fill these before you run. Keep the headline to three words or fewer.",
+      "fields": [
+        {
+          "name": "video_topic",
+          "type": "string",
+          "required": true,
+          "example": "How I fixed my sleep in 7 days"
+        },
+        {
+          "name": "headline",
+          "type": "string",
+          "required": true,
+          "example": "SLEEP FIXED"
+        },
+        {
+          "name": "person",
+          "type": "string",
+          "required": true,
+          "example": "a man in his 30s wearing a dark green sweater"
+        },
+        {
+          "name": "expression",
+          "type": "string",
+          "required": true,
+          "example": "surprised, eyebrows raised, slight open mouth"
+        },
+        {
+          "name": "hero_object",
+          "type": "string",
+          "required": false,
+          "example": "a glowing alarm clock at 7:00",
+          "default": "a single simple prop that matches the topic"
+        },
+        {
+          "name": "background_style",
+          "type": "string",
+          "required": true,
+          "example": "deep navy studio gradient"
+        },
+        {
+          "name": "text_color",
+          "type": "string",
+          "required": true,
+          "example": "warm cream"
+        },
+        {
+          "name": "side",
+          "type": "string",
+          "required": true,
+          "example": "right"
+        },
+        {
+          "name": "text_side",
+          "type": "string",
+          "required": true,
+          "example": "left"
+        },
+        {
+          "name": "face_photo",
+          "type": "file",
+          "required": true,
+          "example": "headshot.jpg, plain wall, good light"
+        }
+      ]
+    },
+    "output_schema": {
+      "description": "What you get, plus a phone-size test.",
+      "fields": [
+        {
+          "name": "image",
+          "type": "file",
+          "example": "sleep-fixed-16x9-2k.png"
+        },
+        {
+          "name": "headline_used",
+          "type": "string",
+          "example": "SLEEP FIXED"
+        },
+        {
+          "name": "phone_test",
+          "type": "string",
+          "example": "Shrink to 160px wide. Headline still readable? Keep. Not readable? Cut one word."
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Sleep video, cream text on navy",
+        "example_input": {
+          "video_topic": "How I fixed my sleep in 7 days",
+          "headline": "SLEEP FIXED",
+          "expression": "surprised, eyebrows raised",
+          "background_style": "deep navy studio gradient",
+          "text_color": "warm cream"
+        },
+        "example_output": {
+          "image": "sleep-fixed-16x9-2k.png",
+          "headline_used": "SLEEP FIXED",
+          "phone_test": "Readable at 160px. Pass."
+        }
+      },
+      {
+        "title": "Budget cooking, yellow text on charcoal",
+        "example_input": {
+          "video_topic": "Five dinners for ten dollars",
+          "headline": "FIVE FOR $10",
+          "expression": "confident smirk",
+          "background_style": "charcoal kitchen wall, softly out of focus",
+          "text_color": "mustard yellow"
+        },
+        "example_output": {
+          "image": "five-for-ten-16x9-2k.png",
+          "headline_used": "FIVE FOR $10",
+          "phone_test": "Readable at 160px. Pass."
+        }
+      }
+    ],
+    "non_obvious_insights": [
+      "State the phone test inside the prompt. 'Readable at 160 pixels wide' changes the model's size and spacing decisions.",
+      "Empty space must be requested as a named third of the frame. 'Leave room for text' usually produces a centered subject.",
+      "Three words maximum is a hard rule, not a style choice. Every extra word shrinks the rest.",
+      "Ask for catchlights in the eyes. They are the single strongest signal of a real, alive face.",
+      "Keep the face photo on a plain background. Busy backgrounds get blended into the new scene.",
+      "Naming an exact headline in quotes prevents the model from inventing filler words like 'AMAZING'.",
+      "Generate three expressions with the same everything else, then pick on a phone, not a monitor."
+    ],
+    "monetization_ideas": [
+      "Sell a thumbnail subscription: 8 thumbnails a month, 48-hour turnaround, fixed price.",
+      "Productize a 'channel relaunch' pack: banner, 8 thumbnails, one consistent look.",
+      "Offer an A/B pair per video (two headlines), priced per pair. Creators pay for testable options.",
+      "Teach the method as a 40-minute workshop using this JSON as the handout."
+    ],
+    "reusability_notes": "Same package works for podcasts (swap hero object for a microphone), course covers (change aspect_ratio to 1:1), and blog headers (21:9). Keep headline, expression and background as variables and you can mass-produce a season of covers. Swap 'YouTube thumbnail' in task for 'podcast cover' and the rest still holds."
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "handoff_version": "1.0.0",
+  "project": "didactic-JSON-memory",
+  "one_line": "JSON prompt packages for Nano Banana Pro, with a scored memory that keeps only the rules that work.",
+  "surface": {
+    "app": "node app/server.mjs  →  http://localhost:5173",
+    "cli": "node tools/nbjson.mjs help",
+    "tests": "npm test  (24 checks: 14 engine, 10 server)",
+    "docs": ["README.md", "docs/GUIDE.md", "docs/PROMPTING.md", "docs/MEMORY.md", "docs/PLAYBOOK.md"]
+  },
+  "invariants": [
+    "Zero runtime dependencies. Do not add a framework, a bundler, or a CSS library.",
+    "The browser never invents data. It renders what the server returns.",
+    "Raw JSON is never sent to the image model. The renderer writes sentences.",
+    "A lesson is one sentence, one fix, under 240 characters.",
+    "Memory stays under 24 active lessons and ~3,000 characters of active text.",
+    "Prompt packs stay under ~30 lines of rendered output.",
+    "File paths, field names, and CLI flags in the docs must match the code exactly."
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "owner": "builder",
+      "title": "Gemini API adapter",
+      "why": "Turns a rendered prompt into a real image without copy-paste. Biggest single unlock for non-technical users.",
+      "depends_on": [],
+      "inputs": ["lib/render.mjs", "app/server.mjs", "templates/*.json"],
+      "steps": [
+        "Add app/generate.mjs that POSTs to the Gemini image endpoint using process.env.GEMINI_API_KEY.",
+        "Accept { id, vars, settings_override } and return image bytes + prompt + cost.",
+        "Enforce a hard cap of 1 concurrent 4K request and a per-session spend ceiling from env.",
+        "Fail closed when the key is missing: never pretend an image was generated.",
+        "Add a CLI path: node tools/nbjson.mjs generate <template> --vars <file> --out <dir>."
+      ],
+      "acceptance": [
+        "Key absent → clear error, exit code 1, nothing written.",
+        "Dry-run mode prints the prompt and estimated cost without calling out.",
+        "Spend ceiling blocks the 2nd 4K request when the cap is $0.30.",
+        "One test asserts the request body shape using a local stub server."
+      ],
+      "do_not": [
+        "Do not commit keys, .env files, or signed URLs.",
+        "Do not silently retry on 429 without telling the user it cost money."
+      ]
+    },
+    {
+      "id": "T2",
+      "owner": "builder",
+      "title": "Per-client forks",
+      "why": "Agencies need one memory per client. One folder per client beats one giant schema.",
+      "depends_on": [],
+      "inputs": ["memory/core.memory.json", "tools/nbjson.mjs"],
+      "steps": [
+        "Add tools/fork.mjs --client <slug> that copies templates/ + memory/ into clients/<slug>/.",
+        "Make MEMORY_PATH resolve from the current working directory when clients/<slug>/ is detected.",
+        "Add --client to render, add, score and stats.",
+        "Write clients/README.md explaining fork, sync, and never merge client lessons by hand."
+      ],
+      "acceptance": [
+        "Two clients keep independent lesson scores in separate files.",
+        "Forking twice never overwrites an existing client folder without --force.",
+        "Existing single-folder behavior is unchanged; all 24 tests still pass."
+      ],
+      "do_not": ["Do not put client folders inside templates/.", "Do not sync lessons automatically between clients."]
+    },
+    {
+      "id": "T3",
+      "owner": "builder",
+      "title": "Gallery of real outputs",
+      "why": "Trust is visual. A strip of accepted images next to the prompt that made them sells the system instantly.",
+      "depends_on": ["T1"],
+      "inputs": ["app/public/index.html", "app/public/styles.css"],
+      "steps": [
+        "Add gallery/ with <template-id>/<slug>.json holding { image, vars, prompt, verdict, lessons }.",
+        "Add GET /api/gallery that lists entries without loading full images.",
+        "Add a fourth view: a 3-column masonry strip, caption on hover, click opens image + prompt.",
+        "Store images at 1K and keep each file under 400 KB."
+      ],
+      "acceptance": [
+        "Gallery renders with zero entries without an error state.",
+        "Each card shows the template, aspect ratio, and the lessons used.",
+        "Total repo size grows by less than 8 MB for 12 entries."
+      ],
+      "do_not": ["Do not show rejected images unless clearly labelled.", "Do not strip SynthID."]
+    },
+    {
+      "id": "T4",
+      "owner": "designer",
+      "title": "Design system hardening",
+      "why": "The look is the first proof. It must survive edits by people who do not know why it works.",
+      "depends_on": [],
+      "inputs": ["app/public/styles.css", "agents/brief-DESIGNER.md"],
+      "steps": [
+        "Move every color, radius and type step into :root tokens. No raw hex outside :root.",
+        "Add a print stylesheet for the checklist view: black text, no cards, one page.",
+        "Verify keyboard order in all four views and a visible focus ring on every control.",
+        "Test at 320px, 768px, 1280px. Nothing scrolls sideways at any width."
+      ],
+      "acceptance": [
+        "Contrast: body text at least 7:1 on its background; muted text at least 4.5:1.",
+        "No layout shift on load (reserve height for the prompt box).",
+        "Every interactive element reachable by Tab, in reading order."
+      ],
+      "do_not": ["Do not add a web font.", "Do not add gradients to cards.", "Do not animate anything on scroll."]
+    },
+    {
+      "id": "T5",
+      "owner": "operator",
+      "title": "First paid delivery SOP",
+      "why": "Converts the system into revenue with a repeatable 3-day loop.",
+      "depends_on": [],
+      "inputs": ["docs/PLAYBOOK.md", "templates/product-hero-shot.json"],
+      "steps": [
+        "Pick one niche with bad photos and repeatable products.",
+        "Send a 5-image free sample built from their own photos. No deck.",
+        "Quote per set, not per hour. Include one revision round and the delivery date.",
+        "Deliver a folder: images, the filled vars JSON, and a one-page style note.",
+        "Score every lesson used. Retire what did not help."
+      ],
+      "acceptance": [
+        "Sample delivered within 24h of receiving photos.",
+        "Every delivered image passed the hands/eyes/digits check at 100%.",
+        "Client receives the vars file so they can re-run without you."
+      ],
+      "do_not": ["Do not promise exact text on labels you cannot read.", "Do not deliver 4K before the client approves a 2K proof."]
+    },
+    {
+      "id": "T6",
+      "owner": "reviewer",
+      "title": "Quality gate before any PR",
+      "why": "One sloppy commit undoes the impression the design buys.",
+      "depends_on": ["T1", "T2", "T3", "T4"],
+      "inputs": ["npm test", "node tools/nbjson.mjs validate"],
+      "steps": [
+        "Run npm test and validate. Both must be clean, not 'mostly clean'.",
+        "Run the CLI help and diff the flags against the docs.",
+        "Open the app at 320px and 1280px. Click every control once.",
+        "Read the diff for invented claims, fake metrics, and placeholder lorem.",
+        "Check that no new dependency appeared in package.json."
+      ],
+      "acceptance": [
+        "0 failing tests, 0 validator errors, 0 broken links in docs.",
+        "No dependency added without an explicit reason in the PR body.",
+        "Every new claim in the docs is either sourced or labelled as an opinion."
+      ],
+      "do_not": ["Do not merge on 'it works on my machine'.", "Do not accept 'TODO' in user-facing copy."]
+    }
+  ]
+}

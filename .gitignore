@@ -1,0 +1,7 @@
+node_modules/
+out/
+*.log
+.DS_Store
+# Keep your values files out of Git if they hold client data.
+*.vars.json
+!examples/*.vars.json

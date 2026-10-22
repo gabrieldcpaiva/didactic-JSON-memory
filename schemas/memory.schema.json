@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.local/schemas/memory.schema.json",
+  "title": "Prompt memory file",
+  "description": "A small scored store of one-line lessons. Not a log. Grows only when a fix is proven.",
+  "type": "object",
+  "required": ["memory_version", "rules", "lessons"],
+  "properties": {
+    "memory_version": { "type": "string" },
+    "name": { "type": "string" },
+    "purpose": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date" },
+    "rules": {
+      "type": "object",
+      "required": ["max_active_lessons", "max_chars_per_lesson"],
+      "properties": {
+        "max_active_lessons": { "type": "integer", "minimum": 4, "maximum": 64 },
+        "max_chars_per_lesson": { "type": "integer", "minimum": 80, "maximum": 400 },
+        "promote_at": { "type": "integer", "minimum": 1, "description": "Wins needed to move a trial lesson to active." },
+        "retire_below": { "type": "integer", "maximum": 0, "description": "Score at or under this retires an active lesson." }
+      }
+    },
+    "lessons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "instruction", "status", "tags", "score", "wins", "losses"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^L[0-9]{3,}$" },
+          "title": { "type": "string", "maxLength": 64 },
+          "trigger": { "type": "string", "description": "When this lesson applies, in a few words." },
+          "instruction": {
+            "type": "string",
+            "maxLength": 240,
+            "description": "One fix, one sentence, written as a direct order. This text can be injected into a prompt."
+          },
+          "scope": {
+            "enum": ["prompt", "workflow"],
+            "default": "prompt",
+            "description": "prompt = the model must read it. workflow = the human must do it. Never mixed."
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Matched against package tags."
+          },
+          "score": { "type": "number", "description": "wins minus losses." },
+          "wins": { "type": "number", "minimum": 0 },
+          "losses": { "type": "number", "minimum": 0 },
+          "status": { "enum": ["active", "trial", "retired"] },
+          "source": { "type": "string", "examples": ["seed", "user", "import"] },
+          "created_at": { "type": "string", "format": "date" },
+          "evidence": { "type": "string", "description": "One line saying how you know it works." }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Foundry — image prompts that remember</title>
+<meta name="description" content="Fill a short form. Get a clean image prompt. The system remembers which rules worked.">
+<link rel="stylesheet" href="/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111'/%3E%3Cpath d='M9 22V10h6a4 4 0 0 1 0 8h-3' stroke='%23f0e6d2' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="shell top">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="28" height="28"><rect width="32" height="32" rx="9"/><path d="M10 23V9h6.2a4.2 4.2 0 0 1 0 8.4H13" fill="none" stroke-width="2.6" stroke-linecap="round"/></svg>
+    </span>
+    <span>
+      <strong>Prompt Foundry</strong>
+      <em>JSON prompts · Nano Banana Pro</em>
+    </span>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab is-on" data-view="build" role="tab" aria-selected="true">Build</button>
+    <button class="tab" data-view="memory" role="tab" aria-selected="false">Memory<span class="pill" id="memCount">0</span></button>
+    <button class="tab" data-view="about" role="tab" aria-selected="false">How it works</button>
+  </nav>
+</header>
+
+<main class="shell">
+  <!-- ============================== BUILD ============================== -->
+  <section id="view-build" class="view is-on" aria-labelledby="build-title">
+    <div class="intro">
+      <h1 id="build-title">Pick a job.<br>Fill nine blanks.<br>Get a prompt that behaves.</h1>
+      <p class="lede">Every package is a JSON file. The renderer turns it into plain sentences, then adds only the rules that have earned their place. Nothing is generated behind your back.</p>
+      <div class="facts" id="facts">
+        <div><b>7</b><span>templates</span></div>
+        <div><b id="factLessons">18</b><span>lessons</span></div>
+        <div><b id="factCost">$0.13</b><span>per 2K image</span></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- picker -->
+      <aside class="pick" aria-label="Templates">
+        <p class="eyebrow">01 — the job</p>
+        <ul id="tplList" class="tpls"></ul>
+      </aside>
+
+      <!-- form -->
+      <article class="card">
+        <p class="eyebrow">02 — the blanks</p>
+        <h2 id="tplTitle">Choose a template</h2>
+        <p class="goal" id="tplGoal">Templates load from the repo's <code>templates/</code> folder.</p>
+        <div class="meta" id="tplMeta"></div>
+
+        <form id="form" autocomplete="off"></form>
+
+        <div class="row">
+          <label class="switch">
+            <input type="checkbox" id="useMemory" checked>
+            <span>Use memory lessons</span>
+          </label>
+          <div class="actions">
+            <button type="button" class="ghost" id="copyBtn" disabled>Copy prompt</button>
+            <button type="button" class="solid" id="renderBtn">Render prompt</button>
+          </div>
+        </div>
+        <p class="hint" id="formHint">Values are pre-filled with real examples. Replace them with yours.</p>
+      </article>
+
+      <!-- output -->
+      <article class="card out">
+        <p class="eyebrow">03 — the prompt</p>
+        <div id="outEmpty" class="empty">
+          <p>Nothing rendered yet.</p>
+          <p class="small">Hit <b>Render prompt</b>. You will get labeled sentences, the settings to use, and the exact cost of one image.</p>
+        </div>
+
+        <div id="outBody" hidden>
+          <div class="chips" id="outChips"></div>
+          <pre id="promptBox" tabindex="0" aria-live="polite"></pre>
+          <div class="lessons" id="outLessons"></div>
+          <p class="hint">Paste into Nano Banana Pro. Attach your reference images. Set the ratio and resolution shown above.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================== MEMORY ============================== -->
+  <section id="view-memory" class="view" aria-labelledby="mem-title">
+    <div class="intro slim">
+      <h1 id="mem-title">Memory is a filter, not a diary.</h1>
+      <p class="lede">A lesson earns its place or leaves. Two wins promote it. A score of −2 retires it. Only <em>prompt</em> lessons reach the image; <em>workflow</em> lessons are for you.</p>
+      <div class="facts" id="memFacts"></div>
+    </div>
+
+    <div class="grid two">
+      <article class="card">
+        <div class="cardhead">
+          <p class="eyebrow">Lessons in the prompt</p>
+          <span class="tagcount" id="promptCount"></span>
+        </div>
+        <ul class="lessons full" id="promptLessons"></ul>
+      </article>
+
+      <div class="stack">
+        <article class="card">
+          <p class="eyebrow">Your checklist</p>
+          <ul class="checklist" id="workflowLessons"></ul>
+        </article>
+
+        <article class="card">
+          <p class="eyebrow">Teach it something</p>
+          <form id="lessonForm" class="mini">
+            <label>Title<input name="title" maxlength="64" placeholder="Name the light direction"></label>
+            <label>Instruction<textarea name="instruction" maxlength="240" rows="3" placeholder="Say the light direction in words: soft key from the top left."></textarea></label>
+            <div class="twocol">
+              <label>Tags<input name="tags" placeholder="light, product"></label>
+              <label>Scope
+                <select name="scope">
+                  <option value="prompt">prompt — the model reads it</option>
+                  <option value="workflow">workflow — I do it myself</option>
+                </select>
+              </label>
+            </div>
+            <button class="solid" type="submit">Add lesson</button>
+            <p class="hint" id="lessonHint">One sentence. One fix. Under 240 characters.</p>
+          </form>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== ABOUT ============================== -->
+  <section id="view-about" class="view" aria-labelledby="about-title">
+    <div class="intro slim">
+      <h1 id="about-title">How this works</h1>
+      <p class="lede">Four steps, no magic. You can audit every one of them in the repo.</p>
+    </div>
+
+    <ol class="steps">
+      <li><b>Template</b><p>Craft that does not change: blocks, locks, known failures. Frozen in JSON.</p></li>
+      <li><b>Values</b><p>Only what changes: names, colors, headlines. Nine blanks, prefilled with real examples.</p></li>
+      <li><b>Memory</b><p>Proven one-line lessons, selected by tag and score, capped by a character budget.</p></li>
+      <li><b>Render</b><p>JSON becomes short labeled sentences. Never raw JSON — braces get painted into the picture.</p></li>
+    </ol>
+
+    <div class="grid two">
+      <article class="card">
+        <p class="eyebrow">The loop</p>
+        <pre class="ascii">render  →  run  →  judge  →  score
+   ↑                              │
+   └──────── lessons ─────────────┘</pre>
+        <p class="hint">Two wins: active. −2: retired. Nothing else gets in.</p>
+      </article>
+      <article class="card">
+        <p class="eyebrow">Honest limits</p>
+        <ul class="plain">
+          <li>A rendered prompt is not a guarantee. Run it twice.</li>
+          <li>Text under ~12px in the final image still breaks.</li>
+          <li>This prepares prompts; it does not call the API.</li>
+          <li>SynthID is in every output. Do not pass them off as untouched photos.</li>
+          <li>Seed scores are priors. Score them yourself.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="terminal">
+      <p class="eyebrow">Same engine, no browser</p>
+      <pre>node tools/nbjson.mjs render product-hero-shot --vars examples/candle.vars.json
+node tools/nbjson.mjs render youtube-thumbnail --vars my-batch.json --out ./prompts/
+node tools/nbjson.mjs score L006 win
+node tools/nbjson.mjs checklist --tags text,quality
+npm test</pre>
+    </div>
+  </section>
+</main>
+
+<footer class="shell foot">
+  <span>Zero dependencies. Node 18+. MIT.</span>
+  <span id="footStatus" class="status" aria-live="polite">ready</span>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="/app.js"></script>
+</body>
+</html>

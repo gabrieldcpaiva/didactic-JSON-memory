@@ -1,0 +1,214 @@
+{
+  "prompt_package": {
+    "id": "brand-mascot-scene",
+    "version": "1.0.0",
+    "tags": [
+      "character",
+      "consistency",
+      "brand"
+    ],
+    "goal_summary": "Put the same mascot or character into any new scene without the face or outfit drifting.",
+    "user_profile": {
+      "who": "Brand owner or illustrator building a recurring character",
+      "skill_level": "Intermediate",
+      "language": "English",
+      "time_budget": "8 minutes"
+    },
+    "nano_banana_prompt": {
+      "model": "gemini-3-pro-image",
+      "settings": {
+        "aspect_ratio": "1:1",
+        "resolution": "2K",
+        "reference_images": 3,
+        "search_grounding": false
+      },
+      "blocks": {
+        "task": "Place my character {{character_name}} in a new scene: {{scene_brief}}. The character must look identical to the attached reference images.",
+        "subject": "{{character_name}}, {{age_and_type}}, wearing {{outfit}}. Same face shape, same eye spacing, same nose, same hairstyle, same body proportions as reference image 1. Same outfit colors and logo placement as reference image 2.",
+        "scene": "{{scene_brief}}. The character is {{pose}} and {{action}}. Scene depth is clear, with foreground, subject and background separated.",
+        "style": [
+          "{{art_style}}",
+          "consistent character design",
+          "clean edges",
+          "brand-accurate colors",
+          "commercial illustration quality"
+        ],
+        "camera": "{{shot_type}}, character occupies about 60% of the frame height, three-quarter view, eye level.",
+        "light": "{{light_mood}}, soft shadows, clear separation between character and background.",
+        "text_in_image": [],
+        "locks": [
+          "Face, hairstyle and body proportions match reference image 1 exactly. Do not restyle the face.",
+          "Outfit, accessories and logo colors match reference image 2 exactly.",
+          "Overall art style matches reference image 3 exactly: same line weight, same shading, same palette."
+        ],
+        "avoid": [
+          "changing age, ethnicity or body type",
+          "new accessories or costume pieces",
+          "style drift toward photo or 3D",
+          "extra characters in frame",
+          "text or speech bubbles I did not request"
+        ]
+      }
+    },
+    "input_schema": {
+      "description": "Use three reference images: face, outfit, style. More than three dilutes the signal.",
+      "fields": [
+        {
+          "name": "character_name",
+          "type": "string",
+          "required": true,
+          "example": "Milo the fox"
+        },
+        {
+          "name": "age_and_type",
+          "type": "string",
+          "required": true,
+          "example": "a 7-year-old anthropomorphic red fox"
+        },
+        {
+          "name": "outfit",
+          "type": "string",
+          "required": true,
+          "example": "mustard raincoat and a small canvas satchel"
+        },
+        {
+          "name": "art_style",
+          "type": "string",
+          "required": true,
+          "example": "soft gouache children's book illustration"
+        },
+        {
+          "name": "scene_brief",
+          "type": "string",
+          "required": true,
+          "example": "standing in a rainy bookshop doorway at dusk"
+        },
+        {
+          "name": "pose",
+          "type": "string",
+          "required": true,
+          "example": "turned slightly toward the viewer"
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "required": true,
+          "example": "closing a dripping umbrella"
+        },
+        {
+          "name": "shot_type",
+          "type": "string",
+          "required": true,
+          "example": "medium shot from the knees up"
+        },
+        {
+          "name": "light_mood",
+          "type": "string",
+          "required": true,
+          "example": "warm shop light against cool blue rain"
+        },
+        {
+          "name": "face_ref",
+          "type": "file",
+          "required": true,
+          "example": "milo_face.png"
+        },
+        {
+          "name": "outfit_ref",
+          "type": "file",
+          "required": true,
+          "example": "milo_outfit.png"
+        },
+        {
+          "name": "style_ref",
+          "type": "file",
+          "required": true,
+          "example": "milo_style_plate.png"
+        }
+      ]
+    },
+    "output_schema": {
+      "description": "The new scene plus a drift score you assign yourself.",
+      "fields": [
+        {
+          "name": "image",
+          "type": "file",
+          "example": "milo-bookshop-1x1-2k.png"
+        },
+        {
+          "name": "drift_checklist",
+          "type": "array",
+          "example": [
+            "face matches",
+            "outfit matches",
+            "line weight matches",
+            "palette matches"
+          ]
+        },
+        {
+          "name": "drift_score",
+          "type": "integer",
+          "example": 4
+        }
+      ]
+    },
+    "examples": [
+      {
+        "title": "Mascot in a rainy bookshop doorway",
+        "example_input": {
+          "character_name": "Milo the fox",
+          "outfit": "mustard raincoat and a small canvas satchel",
+          "art_style": "soft gouache children's book illustration",
+          "scene_brief": "standing in a rainy bookshop doorway at dusk",
+          "action": "closing a dripping umbrella"
+        },
+        "example_output": {
+          "image": "milo-bookshop-1x1-2k.png",
+          "drift_checklist": [
+            "face matches",
+            "raincoat color matches",
+            "line weight matches",
+            "palette matches"
+          ],
+          "drift_score": 4
+        }
+      },
+      {
+        "title": "Same mascot on a summer train platform",
+        "example_input": {
+          "character_name": "Milo the fox",
+          "outfit": "mustard raincoat folded over one arm, satchel across the body",
+          "art_style": "soft gouache children's book illustration",
+          "scene_brief": "waiting on a sunlit rural train platform",
+          "action": "checking a paper ticket"
+        },
+        "example_output": {
+          "image": "milo-platform-1x1-2k.png",
+          "drift_checklist": [
+            "face matches",
+            "satchel strap correct",
+            "gouache texture consistent"
+          ],
+          "drift_score": 4
+        }
+      }
+    ],
+    "non_obvious_insights": [
+      "Three references beat five. Face, outfit and style are different signals; extra images blur which one wins.",
+      "Describe the face in words too. Image references carry identity, but words stop the model from reinterpreting it.",
+      "Lock the line weight. The fastest visual drift is not the face, it is the drawing technique.",
+      "Keep a fixed 'character sheet' file with the face at the same crop and angle every time. Consistent input is half the consistency.",
+      "Change one variable per run. If you change scene and outfit together, you cannot tell which one broke the look.",
+      "Do not ask for a new expression and a new outfit in the same run. Expressions alter face geometry.",
+      "Save your best result as reference image 1 for the next run. The character sheet improves like a family photo album."
+    ],
+    "monetization_ideas": [
+      "Sell a character bible service: 12 consistent scenes plus a reusable reference set.",
+      "Offer a children's book package: cover and 12 spreads with one locked character.",
+      "License mascot scene packs to small brands for seasonal campaigns.",
+      "Run a monthly 'mascot in the news' social pack for one client, same package, new scenes.",
+      "Sell the drift checklist as a QA document to studios that outsource illustration."
+    ],
+    "reusability_notes": "Change art_style for a new brand and the package still works. Swap character for a product, a pet or a real person (with consent) and reuse the same locks. For animation-style turnarounds, set aspect_ratio to 16:9 and ask for four panels of the same character in one image, then cut them apart."
+  }
+}
