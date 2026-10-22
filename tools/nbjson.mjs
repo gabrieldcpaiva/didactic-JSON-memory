@@ -72,7 +72,9 @@ nbjson — JSON prompt packages for Nano Banana Pro
   score <lesson-id> win|loss
   stats                     Counts, characters and token estimate.
   checklist [--tags a,b]    Print the human checklist (workflow lessons).
-  prune [--yes]             Delete trial lessons with no wins and no losses.
+  prune [--yes] [--include-priors]
+                            Delete trial lessons that produced no result.
+                            Priors (shipped untested) are protected by default.
   learn <file>              Add every lesson found in a snippet of JSON.
   help                      Show this text.
 
@@ -219,7 +221,8 @@ function cmdList(flags) {
   }
   console.log(`${'ID'.padEnd(6)}${'SCORE'.padEnd(7)}${'W/L'.padEnd(8)}${'STATUS'.padEnd(10)}TITLE`);
   for (const l of rows.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))) {
-    console.log(`${l.id.padEnd(6)}${String(l.score).padEnd(7)}${`${l.wins}/${l.losses}`.padEnd(8)}${l.status.padEnd(10)}${l.title}`);
+    const prov = (l.provenance ?? 'prior') === 'tested' ? '' : '  [untested]';
+    console.log(`${l.id.padEnd(6)}${String(l.score).padEnd(7)}${`${l.wins}/${l.losses}`.padEnd(8)}${l.status.padEnd(10)}${l.title}${prov}`);
     if (flags.chars) {
       console.log(`${' '.repeat(6)}${l.instruction}`);
       console.log(`${' '.repeat(6)}tags: ${(l.tags ?? []).join(', ') || 'none'} (${l.instruction.length} chars)`);
@@ -270,6 +273,10 @@ function cmdStats() {
   const mem = loadMemory(MEMORY);
   const st = memoryStats(mem);
   console.log(JSON.stringify(st, null, 2));
+  console.log(
+    `\nEvidence: ${st.tested} tested, ${st.untested_priors} untested priors.` +
+    (st.tested === 0 ? '\nNothing here is proven yet. Score a lesson after you look at a real image.' : ''),
+  );
   const stale = staleLessons(mem);
   if (stale.length) {
     console.log(`\n${stale.length} trial lesson(s) with no results yet:`);
@@ -280,9 +287,17 @@ function cmdStats() {
 /* ------------------------------------------------------------------ prune */
 function cmdPrune(flags) {
   const mem = loadMemory(MEMORY);
-  const stale = staleLessons(mem);
+  const includePriors = Boolean(flags['include-priors']);
+  if (includePriors) {
+    console.warn('! --include-priors is on. This deletes lessons that shipped untested, not lessons that failed.');
+  }
+  const stale = staleLessons(mem, { includePriors });
+  const protectedPriors = mem.lessons.filter(
+    (l) => l.status === 'trial' && l.wins === 0 && l.losses === 0 && (l.provenance ?? 'prior') === 'prior',
+  ).length;
   if (!stale.length) {
-    console.log('Nothing to prune. Every lesson has a result.');
+    console.log('Nothing to prune. Priors are protected until they earn a result.');
+    if (protectedPriors) console.log(`${protectedPriors} untested prior(s) kept on purpose. Score them instead of deleting them.`);
     return;
   }
   for (const l of stale) console.log(`  would remove ${l.id}  ${l.title}`);
@@ -350,6 +365,7 @@ const { values: flags, positionals } = parseArgs({
     json: { type: 'boolean' },
     chars: { type: 'boolean' },
     yes: { type: 'boolean' },
+    'include-priors': { type: 'boolean' },
     'no-memory': { type: 'boolean' },
     'lesson-budget': { type: 'string' },
   },

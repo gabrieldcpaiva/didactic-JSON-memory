@@ -267,10 +267,18 @@ async function loadMemory() {
     const data = await api('/api/memory');
     const s = data.stats;
     $('#memFacts').innerHTML = `
+      <div><b>${s.tested ?? 0}</b><span>tested</span></div>
+      <div><b>${s.untested_priors ?? 0}</b><span>untested priors</span></div>
       <div><b>${s.active}</b><span>active</span></div>
-      <div><b>${s.trial}</b><span>trial</span></div>
-      <div><b>${s.retired}</b><span>retired</span></div>
-      <div><b>${s.approx_active_tokens}</b><span>tokens of rules</span></div>`;
+      <div><b>${s.approx_injectable_tokens ?? s.approx_active_tokens}</b><span>tokens if injected</span></div>`;
+
+    const ev = $('#memEvidence');
+    if (ev) {
+      ev.textContent = (s.tested ?? 0) === 0
+        ? '0 proven. That is the honest starting point: this file is a set of beliefs, not results. Look at one image, then score one lesson.'
+        : `${s.tested} lesson(s) carry a real result. ${s.untested_priors} are still beliefs.`;
+      ev.classList.toggle('is-zero', (s.tested ?? 0) === 0);
+    }
 
     $('#promptCount').textContent = `${data.lessons.length} selected for a typical prompt`;
 

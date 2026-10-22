@@ -1,7 +1,7 @@
 {
   "memory_version": "1.0.0",
   "name": "core",
-  "purpose": "Reusable lessons that fix image prompts. Each lesson is one sentence and one fix. Lessons with wins climb. Lessons that keep failing retire.",
+  "purpose": "Reusable lessons that fix image prompts. Every lesson ships at 0/0 and status trial: nothing here is proven until you judge a real image and score it. Two wins promote. A score of -2 retires.",
   "rules": {
     "max_active_lessons": 24,
     "max_chars_per_lesson": 240,
@@ -20,13 +20,14 @@
         "structure",
         "all"
       ],
-      "score": 4,
-      "wins": 5,
-      "losses": 1,
-      "status": "active",
+      "score": 0,
+      "wins": 0,
+      "losses": 0,
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Three merged asks produced a muddy result in 4 of 5 tests."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L002",
@@ -40,13 +41,14 @@
         "thumbnail",
         "infographic"
       ],
-      "score": 5,
-      "wins": 5,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Separate text lists fixed invented words in every poster test."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L003",
@@ -59,13 +61,14 @@
         "text",
         "all"
       ],
-      "score": 3,
-      "wins": 3,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Raw JSON blobs leaked 'blocks' and 'task' into posters."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L004",
@@ -79,13 +82,14 @@
         "poster",
         "ad"
       ],
-      "score": 4,
-      "wins": 4,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Naming a third fixed crowding in 4 of 4 thumbnail runs."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L005",
@@ -98,13 +102,14 @@
         "ad",
         "layout"
       ],
-      "score": 3,
-      "wins": 3,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Adding the size test reduced tiny-text failures to near zero."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L006",
@@ -118,13 +123,14 @@
         "character",
         "photo"
       ],
-      "score": 5,
-      "wins": 5,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Explicit locks stopped label redesign in product tests."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L007",
@@ -137,13 +143,14 @@
         "people",
         "edit"
       ],
-      "score": 3,
-      "wins": 3,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Faces stayed recognizable after adding the ban."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L008",
@@ -156,13 +163,14 @@
         "light",
         "realism"
       ],
-      "score": 2,
-      "wins": 2,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Floating-product complaints vanished in catalog tests."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L009",
@@ -175,13 +183,14 @@
         "consistency",
         "brand"
       ],
-      "score": 2,
-      "wins": 2,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Five-reference runs showed style drift; three-reference runs held."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L010",
@@ -194,13 +203,14 @@
         "workflow",
         "all"
       ],
-      "score": 3,
-      "wins": 3,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Testing at 1K cut spend per accepted image in half."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L011",
@@ -212,13 +222,14 @@
         "infographic",
         "poster"
       ],
-      "score": 4,
-      "wins": 4,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Removed mockup frames from every infographic run."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L012",
@@ -230,13 +241,14 @@
         "infographic",
         "quality"
       ],
-      "score": 3,
-      "wins": 3,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Invented percentages appeared in 2 of 6 early infographics."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L013",
@@ -247,13 +259,14 @@
       "tags": [
         "localization"
       ],
-      "score": 2,
-      "wins": 2,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Single-image bilingual tests produced wrong accents."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L014",
@@ -265,13 +278,14 @@
         "structure",
         "quality"
       ],
-      "score": 2,
-      "wins": 2,
-      "losses": 1,
-      "status": "active",
+      "score": 0,
+      "wins": 0,
+      "losses": 0,
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Positive rewrites held up; long ban lists sometimes added the banned item."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L015",
@@ -284,13 +298,14 @@
         "edit",
         "realism"
       ],
-      "score": 1,
-      "wins": 1,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
       "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "One confirmed restoration where grain kept the print believable."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L016",
@@ -303,13 +318,14 @@
         "people",
         "all"
       ],
-      "score": 2,
-      "wins": 2,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
-      "status": "active",
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Most rejected images failed on one of these three."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L017",
@@ -322,13 +338,14 @@
         "cost",
         "all"
       ],
-      "score": 1,
-      "wins": 1,
+      "score": 0,
+      "wins": 0,
       "losses": 0,
       "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Long prompts lost their final instructions in 2 tests."
+      "evidence": "Untested. No image has been judged against this yet."
     },
     {
       "id": "L018",
@@ -339,13 +356,14 @@
       "tags": [
         "camera"
       ],
-      "score": -3,
+      "score": 0,
       "wins": 0,
-      "losses": 3,
-      "status": "retired",
+      "losses": 0,
+      "status": "trial",
+      "provenance": "prior",
       "source": "seed",
       "created_at": "2026-10-22",
-      "evidence": "Long lens lists added noise and rarely changed the result."
+      "evidence": "Untested. No image has been judged against this yet."
     }
   ]
 }

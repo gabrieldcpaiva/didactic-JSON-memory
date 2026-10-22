@@ -10,7 +10,10 @@ import { tmpdir } from 'node:os';
 
 import { validatePackage, validateMemory } from '../lib/validate.mjs';
 import { renderPackage, findVariables } from '../lib/render.mjs';
-import { addLesson, scoreLesson, selectLessons, DEFAULT_RULES, saveMemory, loadMemory } from '../lib/memory.mjs';
+import {
+  addLesson, scoreLesson, selectLessons, DEFAULT_RULES,
+  saveMemory, loadMemory, staleLessons, memoryStats,
+} from '../lib/memory.mjs';
 
 const root = new URL('..', import.meta.url).pathname;
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'));
@@ -128,6 +131,34 @@ test('lessons respect the character budget', () => {
   const chosen = selectLessons(mem, { tags: [], scope: 'prompt', charBudget: 300 });
   const total = chosen.reduce((n, l) => n + l.instruction.length, 0);
   assert.ok(total <= 300, `budget exceeded: ${total}`);
+});
+
+test('shipped lessons are honest: no wins without a result', () => {
+  const mem = loadMemory(join(root, 'memory', 'core.memory.json'));
+  const claims = mem.lessons.filter((l) => l.wins > 0 || l.losses > 0 || l.score !== 0);
+  assert.deepEqual(claims.map((l) => l.id), [], 'shipped lessons must start at 0/0');
+  for (const l of mem.lessons) {
+    assert.equal(l.status, 'trial', `${l.id} should ship as trial`);
+    assert.equal(l.provenance, 'prior', `${l.id} should be marked prior`);
+  }
+  const st = memoryStats(mem);
+  assert.equal(st.tested, 0);
+  assert.equal(st.untested_priors, mem.lessons.length);
+});
+
+test('prune protects priors', () => {
+  const mem = loadMemory(join(root, 'memory', 'core.memory.json'));
+  assert.equal(staleLessons(mem).length, 0, 'priors must not be prunable by default');
+  assert.ok(staleLessons(mem, { includePriors: true }).length > 0, 'but they exist when asked');
+});
+
+test('scoring marks a prior as tested', () => {
+  const mem = { rules: { ...DEFAULT_RULES }, lessons: [] };
+  const { lesson } = addLesson(mem, { instruction: 'Say the light direction.' });
+  assert.equal(lesson.provenance, 'prior');
+  scoreLesson(mem, lesson.id, 'win');
+  assert.equal(mem.lessons[0].provenance, 'tested');
+  assert.equal(staleLessons(mem, { includePriors: true }).length, 0, 'a scored lesson is no longer stale');
 });
 
 test('memory round-trips through disk', () => {

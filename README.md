@@ -50,7 +50,7 @@ Same engine, same files. Use whichever fits the moment.
 ```
 app/         Zero-dependency web app: server.mjs + plain HTML/CSS/JS.
 templates/   7 ready packages. Fill the blanks, render, run.
-memory/      core.memory.json — 18 scored lessons, 15 active.
+memory/      core.memory.json — 18 lessons, all shipping at 0/0, unproven.
 lib/         validate.mjs, render.mjs, memory.mjs. Plain JS, no deps.
 tools/       nbjson.mjs — one CLI for validate / render / add / score.
 schemas/     JSON Schema files for editors and other tools.
@@ -102,6 +102,10 @@ node tools/nbjson.mjs add --title "Name the light" \
 
 Two wins promote a lesson. A score of −2 retires it. Nothing else is allowed in.
 
+**The file you receive has no results in it.** All 18 lessons ship at 0 wins, 0 losses, status `trial`, marked `provenance: "prior"`. That is not modesty, it is the design: a score you did not observe is a decoration. The first honest number in this repo will be the one you add.
+
+`prune` respects that. It will not delete a prior for being untested — only for failing.
+
 ---
 
 ## Why JSON instead of a text file
@@ -114,6 +118,7 @@ Two wins promote a lesson. A score of −2 retires it. Nothing else is allowed i
 | One prompt per file | One package renders unlimited variants from a list |
 | Reuse means copy-paste | Reuse means change two values |
 | No record of what worked | Scored memory injects proven lessons only |
+| Fake authority | Nothing claims a win it did not earn |
 
 The last row is the real reason. Everything else is housekeeping.
 
@@ -159,13 +164,13 @@ Warm paper, dark ink, one brass accent. Serif headlines, system UI body, mono fo
 
 The prompt box is the only dark surface on the page: it is the thing you came for.
 
-## Honest limits
+## Design notes
 
 - **A rendered prompt is not a guarantee.** The model still varies. Run two or three and pick.
 - **Small text still breaks.** Below ~12px in the final image, expect errors in any language.
 - **This does not call the API.** It prepares the prompt. You paste it into Gemini, AI Studio, or your own code. (T1 in the handoff adds an adapter.)
 - **The app has no auth.** It is a local tool. Do not put it on a public URL as-is.
-- **The seed scores are my starting priors, not lab results.** Score them yourself; the memory is designed to overwrite my opinion with your evidence.
+- **Every shipped lesson is an untested prior.** Scores, statuses and evidence all start empty. The memory is built to be filled by your results, not mine.
 - **SynthID is embedded in every output.** Do not present generated images as untouched photographs.
 
 ---
